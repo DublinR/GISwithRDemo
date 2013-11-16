@@ -1,0 +1,18 @@
+http://cran.r-project.org/web/views/Spatial.html.
+
+
+\begin{frame}
+
+Importing/exporting data	
+RArcInfo, rgdal, maps, spgrass6, GRASS, ncdf4
+	
+Data cleaning and manipulation	
+sp, maptools, PBSmapping
+	
+
+Statistical analysis	
+spatstat 
+gstat 
+geoR 
+spgwr 
+splancs
