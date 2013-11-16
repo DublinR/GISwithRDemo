@@ -1,0 +1,27 @@
+http://cran.r-project.org/web/views/Spatial.html.
+
+%---------------------------------------------------------------------------%
+
+maptools: Tools for reading and handling spatial objects
+
+sp: classes and methods for spatial data
+
+A package that provides classes and methods for spatial data. The classes document where the spatial location information resides, for 2D or 3D data. Utility functions are provided, e.g. for plotting data as 
+maps, spatial selection, as well as methods for retrieving coordinates, for subsetting, print, summary, etc.
+
+%---------------------------------------------------------------------------%
+Importing/exporting data	
+RArcInfo, rgdal, maps, spgrass6, GRASS, ncdf4
+	
+Data cleaning and manipulation	
+sp, maptools, PBSmapping
+	
+%---------------------------------------------------------------------------%
+Statistical analysis	
+spatstat 
+gstat 
+geoR 
+spgwr 
+splancs
+
+%---------------------------------------------------------------------------%
