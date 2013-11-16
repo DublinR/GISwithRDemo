@@ -1,0 +1,25 @@
+Title
+========================================================
+
+Markdown is a simple formatting syntax for authoring web pages (click the **MD** toolbar button for help on Markdown).
+
+When you click the **Knit HTML** button a web page will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(ggmap)
+map.center <- geocode("Kevin Street, Dublin")
+DITmap <- qmap(c(lon=map.center$lon, lat=map.center$lat), source="google", zoom=15)
+```
+```{r}
+summary(cars)
+```
+
+You can also embed plots, for example:
+
+```{r fig.width=7, fig.height=6}
+plot(cars)
+```
+```{r fig.width=7, fig.height=6}
+DITmap + geom_point(y = 53.337089, x = -6.268484, size = 10, color = "blue")
+```
+'
