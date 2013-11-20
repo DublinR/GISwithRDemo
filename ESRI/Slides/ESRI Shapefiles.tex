@@ -1,0 +1,103 @@
+\documentclass{beamer}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{framed}
+
+\begin{document}
+
+\begin{frame}
+\Large
+\begin{enumerate}
+\item Create Maps With \texttt{R} Geospatial Classes and Graphics Tools (\textit{Making Maps})
+\item Read and write ESRI Shape Files (\textit{ESRI})
+\item Display T Spatial Objects with Google Maps and Google Earth (\textit{KML})
+\item Read and Display Data from GPS Devices Using \texttt{R} (\textit{GPX})
+\item Overlay Points on Satellite Image / Extract Pixel Values (\textit{Raster})
+\end{enumerate}
+\end{frame}
+\begin{frame}
+\huge
+ESRI Shapefiles with \texttt{R}
+\end{frame}
+%---------------------------%
+\begin{frame}
+\frametitle{ESRI shapefiles}
+\begin{itemize}
+\item The ESRI Shapefile is a widely used file format for storing vector-based geopatial data (i.e., points, lines, and polygons).\item  This example demonstrates use of several different \texttt{R} packages that provide functions for reading and/or writing shapefiles.
+\end{itemize}
+\end{frame}
+%---------------------------%
+\begin{frame}
+\frametitle{ESRI shapefiles}
+\vspace{-1cm}
+\textbf{Demonstration}\\
+
+\begin{itemize}
+\item The first two approaches  shown here use packages (specifically \textbf{rgdal} and \textbf{maptools}) that depend on the \textbf{sp} package, which defines a set of spatial classes that have become the de facto standard spatial data types in \texttt{R}. \item The third approach (PBS Mapping) creates \texttt{R} data objects that are less generally useful, but necessary when calling other analytical functions defined in the package.
+\end{itemize} 
+\end{frame}
+%---------------------------%
+\begin{frame}
+\frametitle{Using rgdal}
+\begin{itemize}
+\item The rgdal package provides an interface to the \textit{\textbf{GDAL/OGR}} library, which powers the data import/export capabilities of 
+many geospatially aware software applications. 
+\item The package includes functions \texttt{readOGR} and \texttt{writeOGR} for reading and 
+writing not only shapefiles, but numerous other vector-based file formats. 
+\item In addition, the \texttt{ogrInfo} function is useful for retrieving details about the file without reading in the full dataset. These functions are all capable of automatically reading and writing projection information if available. 
+\end{itemize} 
+\end{frame}
+%---------------------------%
+\begin{frame}
+\frametitle{Using rgdal}
+\vspace{-1cm}
+\begin{itemize}
+\item Provided you are able to install the separate \textbf{GDAL/OGR} library - which may be tricky on some systems - it is worth learning how to use this package if you frequently work with shapefiles and/or other spatial data formats, including not just vector formats but raster formats as well.
+\end{itemize}
+\end{frame}
+%---------------------------%
+\begin{frame}
+\frametitle{Using maptools:}
+\begin{itemize}
+\item The \textbf{maptools} package includes a number of useful functions for reading, writing, converting, and otherwise handling 
+spatial objects in \textit{R}. 
+\item The general functions for reading and writing shapefiles are \texttt{readShapeSpatial} and \texttt{writeSpatialShape}, respectively. 
+\item 
+In both cases, the function automatically determines whether the shapefile (or \texttt{R} object) contains points, 
+lines, or polygons, and will then read in (or write out) the data using a more specialized function of the particular type. 
+\end{itemize}
+\end{frame}
+%---------------------------%
+\begin{frame}
+\frametitle{Using maptools}
+\begin{itemize}
+\item These specialized functions, such as re\texttt{adShapeLines} for reading lines, can also be called directly. 
+\item 
+One advantage of doing so is that it will complain if you inadvertently use it on the wrong data type, helping you to catch errors sooner. \item Unlike their \textbf{rgdal} counterparts, the ma\textbf{ptools} functions neither read nor write projection information, leaving it up to you to manage these details manually.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{About PBSMapping (CRAN Description)}
+\textbf{PBSmapping:\\ Mapping Fisheries Data and Spatial Analysis Tools:}\\
+
+This software has evolved from fisheries research conducted at the \emph{\textbf{Pacific Biological Station}} (PBS) in Nanaimo, British Columbia, Canada. It extends the \texttt{R} language to include two-dimensional plotting features similar to those commonly available in a Geographic Information System (GIS). 
+
+Embedded C code speeds algorithms from computational geometry, such as finding polygons that contain specified point events or converting between longitude-latitude and Universal Transverse Mercator (UTM) coordinates.
+\end{frame}
+%---------------------------%
+\begin{frame}
+\frametitle{Using PBSmapping}
+\begin{itemize}
+\item The PBSmapping package can also read (but not write) shapefiles. 
+\item However, note that \textbf{PBSmapping} uses its own custom-defined spatial data types that are optimized to work with various 
+specialized package functions. \item  This makes it harder to take advantage of functions defined in the numerous packages 
+that are built on \textbf{sp}, although the \textbf{\textit{maptools}} package does provide functions that convert between the different formats.
+\end{itemize}
+\end{frame}
+%---------------------------%
+
+
+
+\end{document}

@@ -1,0 +1,391 @@
+\documentclass{beamer}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{framed}
+
+\begin{document}
+
+\begin{frame}
+\Large
+\begin{enumerate}
+\item Create Maps With \texttt{R} Geospatial Classes and Graphics Tools (\textit{Making Maps})
+\item Read and write ESRI Shape Files (\textit{ESRI})
+\item Display T Spatial Objects with Google Maps and Google Earth (\textit{KML})
+\item Read and Display Data from GPS Devices Using \texttt{R} (\textit{GPX})
+\item Overlay Points on Satellite Image / Extract Pixel Values (\textit{Raster})
+\end{enumerate}
+\end{frame}
+
+%---------------------------%
+\begin{frame}
+\huge
+Read and Display Data from GPS Devices Using \texttt{R}
+\end{frame}
+%--------------------------- %
+\begin{frame}
+\frametitle{readGPS function}
+
+\begin{itemize}
+\item This Use Case demonstrates use of the readGPS function, included in the R maptools package. readGPS() is an R interface to the GPSBabel utility, which provides file conversion and data manipulation tools for many popular GPS data formats.
+
+\item For this demonstration, we selected the GPS Exchange (GPX) format, GPS platform-independent and widely-used by Web-aware programs to exchange geospatial data.
+\end{itemize}
+\end{frame}
+
+
+%--------------------------- %
+\begin{frame}[fragile]
+The Demonstration:
+The demonstration has three parts:
+
+Read the input files into R Data Frames
+Plot the data points
+Write a subset of the input data to CSV output files
+Let's look at the R script, section by section. This example code contains two functions:
+
+TheDriver(), which manages execution and generates data plots, and ConvertGPXFiles(), which extracts and filters GPS data and / writes .CSV files.
+
+
+ Let's look at the R source code.
+
+First, here is the program documentation: This describes the two functions in the package.
+
+\end{frame}
+%--------------------------- %
+\begin{frame}
+\frametitle{Demonstration:}
+Reading and converting GPS datasets using the R readGPS function (maptools package)
+
+\begin{itemize}
+\item This demonstration reads GPX-format files containing, respectively, waypoints and tracks collected with a GPS reciever, into  an R Data Frame. 
+\item Then, it extracts selected columns from
+each incoming data frame (date/time/latitude/longitude/altitude)
+into a new and separate data frame. 
+\item The new data frame
+is then written to a comma-separated-value (CSV) file.
+\end{itemize}
+\end{frame}
+%--------------------------- %
+\begin{frame}[fragile]
+\frametitle{Demonstration:}
+Functions:
+\begin{itemize}
+\item TheDriver() - Manages execution of demonstration function 
+\item ConvertGPXFiles() - Reads input .GPX- format file, writes
+a subset to an output .CSV file.
+\end{itemize}
+\end{frame}
+%--------------------------- %
+\begin{frame}[fragile]
+Note: 
+\begin{itemize} 
+\item debug() and browser() statements are incorporated to allow the 
+analysis to 'single-step' through the example:
+\item debug() : Sets up single-line execution of the function.
+\item browser(): Interrupts execution of function, allows inspection of R variable values.
+\end{itemize}
+\end{frame}
+%--------------------------- %
+\begin{frame}[fragile]
+Here is TheDriver()
+
+\begin{framed}
+\begin{verbatim}
+TheDriver <-function()
+{
+ library(maptools)
+#
+# debug(): single-step execution begins here.
+#
+ debug(ConvertGPXFiles)
+ setwd("C:/Projects/scicomp/NewSite/UseCases/ReadGPXFormatGPSData")
+\end{verbatim}
+\end{framed}
+\end{frame}
+%--------------------------- %
+\begin{frame}[fragile]
+ convert a file containing Waypoints
+\begin{verbatim}
+ ConvertGPXFiles("SampleWaypointsOnlyNoOutliers.gpx","SampleWaypointsOut.csv","w")
+#
+# Plot the waypoints 
+# 
+ plot(dfWayptForPlotting@coords[,1:2],type="p",xlab="longitude",ylab="latitude")
+ title("Waypoints from GPX-format GPS file")
+ \end{verbatim}
+Next, call ConvertGPXFiles() twice for two different input files: Once to extract waypoints(single locations), once to extract tracks (linear featues defined by a series of points):
+
+\end{frame}
+
+%--------------------------- %
+\begin{frame}[fragile]
+Convert a file containing Tracks
+\begin{verbatim}
+ ConvertGPXFiles("SampleTracksOnly.gpx","SampleTracksOut.csv","t")
+\end{verbatim}
+Finally, create a plot using the tracks data, then add ('overlay') the waypoints:
+\end{frame}
+
+%--------------------------- %
+\begin{frame}[fragile]
+
+ Plot the track. Note: with the default form (below), plot axes do not display. 
+ To plot x and y axes, 'deconstruct' the x and y coordinates:
+ 'embedded' in the SpatialLinesDataFrame. Thus the syntax:
+\end{frame}
+
+%--------------------------- %
+\begin{frame}[fragile] 
+\begin{framed}
+\begin{verbatim}
+ print(sprintf("Plot tracks/waypoints together..."))
+#browser()
+ plot(sldfTracksForPlotting@lines[[1]]@Lines[[1]]@coords[,1],
+ sldfTracksForPlotting@lines[[1]]@Lines[[1]]@coords[,2],
+ type="l",xlab="longitude",ylab="latitude",add=TRUE)
+ points(dfWayptForPlotting@coords[,1:2],type="p",col="red",pch=19) 
+ title("GPX/GPS Tracks (black) | Waypoints (red)") 
+# 
+ print(sprintf("done with program"))
+# browser()
+}
+\end{verbatim}
+\end{framed}
+\end{frame}
+
+%--------------------------- %
+\begin{frame}[fragile]
+Here is ConvertGPXFiles():
+
+
+Routine ConvertGPXFiles demonstrates 1) extraction of GPS data 
+stored in the standard GPX format into an R data frame,
+using the R readGPS function; 2) extraction of key fields
+(Date/Time, Latitude/Longitude, Elevation) from the initial 
+data frame into a new data frame.
+\end{frame}
+
+%--------------------------- %
+\begin{frame}[fragile]
+\begin{verbatim}
+# function arguments: 
+# 
+# inGPSFile (string): Input GPX file name
+# outConvertFile (string): Output CSV file name
+# FileType (string): Flag indicates input
+# file data type: "w" for waypoints,
+# "t" for tracks.
+#
+\end{verbatim}
+\end{frame}
+
+%--------------------------- %
+\begin{frame}[fragile]
+\begin{verbatim}
+ConvertGPXFiles <- function(inGPSFile,outConvertFile,FileType) 
+{
+# browser()
+Two processing sections,based on file type: Here is the section for waypoints:
+
+ (Consult inline comments for details)
+
+
+ if (FileType == "w")
+ { 
+ ..
+\end{verbatim} 
+ 
+\end{frame}
+%--------------------------- %
+\begin{frame}[fragile]
+
+Read the GPX-format waypoints into a Data Frame
+Note here: readGPS converts waypoints and tracks into 
+data frames with different column layouts. 
+Columns are labeled V1 - Vn)
+
+\begin{verbatim}
+gRawWaypt = readGPS("gpx",inGPSFile,"w")
+\end{verbatim}
+\end{frame}
+
+%--------------------------- %
+\begin{frame}[fragile]
+
+Get number of observations (waypoints)
+\texttt{gRawWaypoint} data frame contains the attributes that we desire in the following columns:
+\begin{itemize}
+\item V3: Observation Date (factor)
+\item V4: Observation Time (factor)
+\item V8: Descruptive Label (string)
+\item V10: Latitude (numeric)
+\item V11: Longitude (numeric)
+\item V21: Elevation (Factor, includes M in last character position)
+\end{itemize}
+
+\end{frame}
+
+%--------------------------- %
+\begin{frame}
+\begin{itemize}
+\item Lets extract these columns, convert Date, Time to strings 
+\item and elevation to numeric format, and construct a new data frame
+\item containing only the columns of interest.
+\end{itemize}
+\end{frame}
+%--------------------------- %
+\begin{frame}[fragile]
+\begin{framed}
+\begin{verbatim}
+ nObs = length(gRawWaypt[,"V3"])
+ sDate = as.character(gRawWaypt[,"V3"])
+ sTime = as.character(gRawWaypt[,"V4"])
+ sLabel = as.character(gRawWaypt[,"V9"]) 
+ fLat = as.numeric(gRawWaypt[,"V10"])
+ fLong = as.numeric(gRawWaypt[,"V11"])
+#
+# compute the spatial bounding box for the waypoint set:
+#
+ bounds = c(range(fLong),range(fLat))
+ dim(bounds) = c(2,2)
+\end{verbatim}
+\end{framed}
+\end{frame}
+%--------------------------- %
+\begin{frame}[fragile] 
+Elevation is a factor with the letter 'M' appended.
+Remove this, and convert the elevation to numeric
+This formula extracted from the HTML help file for the R readGPS package
+
+\begin{verbatim}
+fAlt <- as.numeric(substring(as.character(gRawWaypt$V21),
+ 1,(nchar(as.character(gRawWaypt$V21))-1)))
+\end{verbatim}
+Output data frames - One 'standard' DF for file output,
+one 'SpatialPointsDataFrame' for plotting.
+\end{frame}
+
+ %--------------------------- %
+\begin{frame}[fragile]
+\begin{verbatim}
+ dfWaypoints <<- as.data.frame(cbind(sLabel,sDate,sTime,fLat,fLong,fAlt)) 
+ write.csv(dfWaypoints,outConvertFile)
+ LatLongCoords = SpatialPoints(cbind(fLong,fLat),proj4string = CRS("+proj=longlat"))
+ dfWayptForPlotting <<- SpatialPointsDataFrame(LatLongCoords,
+ bbox=as.matrix(bounds),dfWaypoints[1])
+ print(sprintf("done - waypoints"))
+ }
+\end{verbatim}
+\end{frame}
+
+ %--------------------------- %
+\begin{frame}[fragile]
+Here is the section for tracks:
+
+\begin{verbatim}
+ 
+ else if (FileType == "t")
+ { 
+ gRawTracks = readGPS("gpx",inGPSFile,"t")
+
+\end{verbatim}
+A GPX file can include multiple tracks, known as track sequences, each of which contains the vertices for a single track (line).
+However, the current version of \texttt{readGPS()} combines all points in all  track sequences into a single track. (This may change in the future).
+
+\end{frame}
+
+
+%--------------------------- %
+\begin{frame}
+\begin{itemize}
+\item For this demonstration, we will convert these track points into a 
+ SpatialLinesData Frame (with a single SpatialLines object in one 'row'
+ and a single attribute - "Track 1" - attached to the track (and stored
+in a DataFrame).
+\item The data frame generated by readGPS for Tracks has a different layout:
+
+ V3: Latitude (numeric) 
+ V4: Longitude (numeric)
+ V14: Elevation (Factor, includes 'M' in last character position)
+\end{itemize} 
+\end{frame}
+
+%--------------------------- %
+\begin{frame}
+We use two \texttt{R} geospatial data structures, provided by the sppackage:
+\begin{itemize}
+\item \texttt{SpatialPointsDataFrame} for waypoints, \item \texttt{SpatialLinesDataFrame} for tracks.
+\end{itemize}
+ \textit{Consult the sp package documentation for details on spatial Data Frame components.
+}
+\end{frame}
+
+%--------------------------- %
+\begin{frame}[fragile]
+SpatialPointsDataFrame: 
+One attribute (altitude) per point.
+
+\begin{framed}
+\begin{verbatim} 
+ dfTrackPoints <<- SpatialPointsDataFrame(LatLongCoords,data.frame(fAlt))
+\end{verbatim}
+\end{framed}
+\end{frame}
+%--------------------------- %
+\begin{frame}[fragile]
+Create SpatialLinesDF from the SpatialPointsDF.
+ First, SpatialLines object:
+
+\begin{framed}
+\begin{verbatim}
+ slTrackLine = Lines(list(Line(dfTrackPoints@coords)))
+ slTrackLine@ID = "Track_One"
+ SLPath = SpatialLines(list(slTrackLine),proj4string = CRS("+proj=longlat"))
+
+\end{verbatim}
+\end{framed}
+\end{frame}
+
+%--------------------------- %
+\begin{frame}
+
+Finally, the \texttt{SpatialLinesDataFrame}:
+
+\begin{itemize}
+\item Create a global variable using the "<<-" operator
+\item Plot this in TheDriver().
+\item Write the original track points to a CSV file.
+\end{itemize}
+\end{frame}
+
+%--------------------------- %
+\begin{frame}[fragile]
+\begin{framed}
+\begin{verbatim}
+ sldfTracksForPlotting <<- SpatialLinesDataFrame(SLPath,TrackAttributes,match.ID=FALSE)
+
+ write.csv(dfTrackPoints,outConvertFile)
+ print(sprintf("done - tracks")) 
+ }
+}
+\end{verbatim}
+\end{framed}
+\end{frame}
+
+%--------------------------- %
+\begin{frame}[fragile]
+Here is the \texttt{R} command sequence that loads and runs the program:
+
+\begin{framed}
+\begin{verbatim}
+> source("ExtractWaypoints.r")
+> TheDriver()
+\end{verbatim}
+\end{framed}
+Here are the plots. Note that two 'outlier' waypoints are omitted from the right-side plot as they do not fall within the tracks.
+\end{frame}
+%--------------------------- %
+
+
+\end{document}

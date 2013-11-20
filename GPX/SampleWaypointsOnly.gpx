@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx
+ version="1.0"
+creator="GPSBabel - http://www.gpsbabel.org"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://www.topografix.com/GPX/1/0"
+xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">
+<time>2008-09-14T03:05:37Z</time>
+<bounds minlat="9.113554051" minlon="-79.722464886" maxlat="60.453803055" maxlon="22.281253533"/>
+<wpt lat="60.453803055" lon="22.281035101">
+  <ele>39.779907</ele>
+  <name>001</name>
+  <cmt>06-AUG-08 9:03:53AM</cmt>
+  <desc>06-AUG-08 9:03:53AM</desc>
+  <sym>Flag, Blue</sym>
+</wpt>
+<wpt lat="9.141374426" lon="-79.693442797">
+  <ele>101.784546</ele>
+  <name>530318</name>
+  <cmt>13-SEP-08 3:20:59PM</cmt>
+  <desc>13-SEP-08 3:20:59PM</desc>
+  <sym>Flag, Blue</sym>
+</wpt>
+<wpt lat="9.141439470" lon="-79.693310279">
+  <ele>102.265137</ele>
+  <name>530323</name>
+  <cmt>13-SEP-08 3:23:07PM</cmt>
+  <desc>13-SEP-08 3:23:07PM</desc>
+  <sym>Flag, Blue</sym>
+</wpt>
+<wpt lat="9.141532425" lon="-79.693452604">
+  <ele>100.823242</ele>
+  <name>530332</name>
+  <cmt>13-SEP-08 3:16:40PM</cmt>
+  <desc>13-SEP-08 3:16:40PM</desc>
+  <sym>Flag, Blue</sym>
+</wpt>
+<wpt lat="9.148078440" lon="-79.692480303">
+  <ele>173.882935</ele>
+  <name>533862</name>
+  <cmt>13-SEP-08 4:23:56PM</cmt>
+  <desc>13-SEP-08 4:23:56PM</desc>
+  <sym>Flag, Blue</sym>
+</wpt>
+<wpt lat="9.148320509" lon="-79.692467395">
+  <ele>179.410400</ele>
+  <name>533894</name>
+  <cmt>13-SEP-08 4:20:54PM</cmt>
+  <desc>13-SEP-08 4:20:54PM</desc>
+  <sym>Flag, Blue</sym>
+</wpt>
+<wpt lat="9.148485633" lon="-79.692270253">
+  <ele>182.534668</ele>
+  <name>534414</name>
+  <cmt>13-SEP-08 4:17:40PM</cmt>
+  <desc>13-SEP-08 4:17:40PM</desc>
+  <sym>Flag, Blue</sym>
+</wpt>
+<wpt lat="60.453758799" lon="22.281253533">
+  <ele>40.500977</ele>
+  <name>Apt</name>
+  <cmt>06-AUG-08 9:04:20AM</cmt>
+  <desc>06-AUG-08 9:04:20AM</desc>
+  <sym>Flag, Blue</sym>
+</wpt>
+<wpt lat="9.134695055" lon="-79.722344857">
+  <ele>54.439941</ele>
+  <name>Bridge1</name>
+  <cmt>10-SEP-08 5:42:56PM</cmt>
+  <desc>10-SEP-08 5:42:56PM</desc>
+  <sym>Flag, Blue</sym>
+</wpt>
+<wpt lat="9.120814623" lon="-79.715850726">
+  <ele>63.572510</ele>
+  <name>Pipeline0</name>
+  <cmt>10-SEP-08 6:01:22PM</cmt>
+  <desc>10-SEP-08 6:01:22PM</desc>
+  <sym>Flag, Blue</sym>
+</wpt>
+</gpx>
