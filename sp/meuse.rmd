@@ -1,0 +1,16 @@
+The Meuse Data Set
+
+=================================================
+
+### Package Requirements
+```{r}
+library(sp)
+```
+
+### Inspecting the data set
+```{r}
+data(meuse)
+summary(meuse)
+coordinates(meuse) <- ~x+y
+proj4string(meuse) <- CRS("+init=epsg:28992")
+```
