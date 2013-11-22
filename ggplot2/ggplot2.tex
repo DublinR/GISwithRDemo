@@ -1,0 +1,440 @@
+\documentclass{beamer}
+
+\usepackage{framed}
+\usepackage{graphicx}
+
+\begin{document}
+
+%%-----------------------------------------------%
+%13.12 Vector Fields
+%13.17 Creating a Map
+%13.18 Chloropleth maps
+%13.19 
+%13.20 Shapefiles
+%Wheatley
+%
+%%-----------------------------------------------%
+%www.gadm.org
+
+%-----------------------------------------------%
+
+
+
+
+%--------------------------------------------------%
+%-----------------------------------------------%
+%Page 309 
+%FRAME GOOD
+\begin{frame}[fragile]
+\frametitle{Creating a map}
+
+The default projection is the Mercator projection
+
+\begin{framed}
+\begin{verbatim}
+library(maps)
+states_map <- map_data("state")
+ggplot(states_map, 
+  aes(x=long,y=lat,group=group)) + 
+geom_polygon(fill="white",colour="black")
+
+ggplot(states_map, aes(x=long,y=lat,group=group)) + geom_path() + coord_map("mercator")
+
+
+\end{verbatim}
+\end{framed}
+\end{frame}
+%--------------------------------------------------%
+%--------------------------------------------------%
+\begin{frame}
+%FRAME GOOD
+%Page 309 - bottom section
+The \texttt{map data()} function
+
+\begin{itemize}
+\item[long] Longtitude
+\item[lat] Latitude
+\item[group] This is a grouping variable for each polygon. A region or subregion might have multiple polygons.
+%---------%
+%Page 310 - two maps + two paragraphs
+\item[order] The order to connect each point in a group
+\item[region] Roughly, the names of countries, although some other objects are lakes.
+%---------%
+%Page 311
+\item[subregion] The names of subregions with a region, which can be obtained for multiple groups
+%(For example, the Alaska subregion includes many islands, each within its own group.
+\end{itemize}
+%---------%
+There are a number of different maps available, including\texttt{ world, nz, france,italy,usa} (outline of USA),\texttt{state} (each state in the USA) and \texttt{county }(each county in the USA).
+\end{frame}
+%--------------------------------------------------%
+%--------------------------------------------------%
+\begin{frame}[fragile]
+To get a map of the world
+\begin{framed}
+\begin{verbatim}
+world_map <- map_data("world")
+head(world_map)
+\end{verbatim}
+\end{framed}
+
+\begin{verbatim}
+       long      lat group order region subregion
+1 -133.3664 58.42416     1     1 Canada      <NA>
+2 -132.2681 57.16308     1     2 Canada      <NA>
+3 -132.0498 56.98610     1     3 Canada      <NA>
+4 -131.8797 56.74001     1     4 Canada      <NA>
+5 -130.2492 56.09945     1     5 Canada      <NA>
+6 -130.0131 55.91169     1     6 Canada      <NA>
+\end{verbatim}
+
+\end{frame}
+
+
+%---------%
+%page 311 - mid section
+\begin{frame}[fragile]
+\frametitle{Maps with ggplot2}
+If you want to draw a map of a region in the world map for which there isn't a separate map, you can
+first look for the region name
+
+\begin{framed}
+\begin{verbatim}
+sort(unique(world_map$region))
+
+#East Asia Example in Book
+
+east_asia <- map_data("world",region=c("Japan","China",
+"North Korea","South Korea")).
+
+\end{verbatim}
+\end{framed}
+\end{frame}
+%----------------------------------------------------%
+% Page 311
+\begin{frame}[fragile]
+\frametitle{Maps with ggplot2}
+\begin{framed}
+
+%--------------- COlor Brewer Here
+\begin{verbatim}
+ggplot(east_asia, aes(x=long,y=lat,
+   group=group,fill=region)) + 
+   geom_polygon(colours="black")+
+   scale_fill_brewer(palette="Set2")
+\end{verbatim}
+\end{framed}
+\end{frame}
+\begin{frame}
+content...
+\end{frame}
+%Good to here \end{document}
+%----------------------------------------------%
+\begin{frame}[fragile]
+% Page 311 - Bottom of page
+It is possible to get speciific regions from a particular map.
+
+\begin{framed}
+\begin{verbatim}
+east_asia <- map_data("world",
+    region=c("japan","China","North Korea","South Korea"))
+
+#Map regions to fill colour
+
+scale_fill_brewer("pallette_set2")
+\end{verbatim}
+\end{framed}
+\end{frame}
+%----------------------------------------------%
+
+%Page 312 (TOP OF PAGE)
+\begin{frame}[fragile]
+If there is a separate map for each region, that map data will be at
+higher resolution that in youw ere to extract it from the ``world" map.
+
+
+%---------------%
+\begin{framed}
+\begin{verbatim}
+NZ1 <- map_data("world",region="New Zealand")
+NZ1 < subset(NZ1, long>0 &lat> -48)  #trim off outlying islands
+ggplot(NZ1,aes(x=long,y=lat,group=group)) + geom_path()
+
+NZ2 <- map_data("nz")
+ggplot(nz2 (aes(x=long,y=lat)) + geom_path()
+\end{verbatim}
+\end{framed}
+\end{frame}
+%---------------%
+
+%Page 312 - Discussion
+
+
+
+%----------------------------------------------%
+%Page 313 - TWO NZ graps
+
+%Section 13.18 / Creating a Chlorpleth Map
+\begin{frame}[fragile]
+\frametitle{Chloropleth map}
+%Page 314 is good shape
+Creating a map where regions are colours according to some variable value.
+\\
+%PAge 313 Mid Page
+
+\textbf{The Crime Data (USArrests)}
+
+%---------------%
+\begin{framed}
+\begin{verbatim}
+crimes <-data.frame(state =tolower(rownames(USArrests)),USArrests)
+head(crimes)
+\end{verbatim}
+\end{framed}
+\end{frame}
+%---------------%
+
+%PAge 313/314
+\begin{frame}[fragile]
+\frametitle{Chloropleth map}
+
+\begin{framed}
+\begin{verbatim}
+library(maps)
+states_map <- map_data("state")
+crime_map <- merge(states_map,crimes,by.x="region",by.y="state")
+head(crime_map)
+
+\end{verbatim}
+\end{framed}
+
+\end{frame}
+%-----------------------------------------------------%
+
+\begin{frame}[fragile]
+%Page 314 Plyr
+After merging, the order has changed, leading to polygons drawn in the wrong order.
+To solve this, the data must be sorted.
+\begin{framed}
+\begin{verbatim}
+libary(plyr)
+# Use this package for the arrange function().
+crime_map <- arrange(crime_map,group,order)
+head(crime_map)
+\end{verbatim}
+\end{framed}
+\end{frame}
+
+%R output next
+%--------------------------------------------------------------------%
+%--------------------------------------------------------------------%
+% Page 314 (Mid page)
+\begin{frame}[fragile]
+\frametitle{Chloropleth Maps}
+\begin{framed}
+\begin{verbatim}
+
+ggplot(crimes, aes(map_id=state,fill=Assault))+ 
+geom_polygon(colour="black")+
+expand_limits(x=states_map$long,y=states_map$lat) + 
+coord_map("polyconic")
+
+
+\end{verbatim}
+\end{framed}
+\end{frame}
+%--------------------------------------------------------------------%
+%--------------------------------------------------------------------%
+\begin{frame}[fragile]
+% PAge 314
+\frametitle{Chloropleth Maps}
+\begin{framed}
+\begin{verbatim}
+
+ggplot(crimes(aes(map_id=state,fill=Assault))+
+geom_map(map=state_map,colour="black") + 
+scale_fill_gradient2
+   (low="#559999",mid="grey90",high="#BB650B",midpoint=median(crimes$Assault)) +
+expand_limits(x=state_map$long,y=state_map$lat) +
+co_ordmap("poyconic")
+
+\end{verbatim}
+\end{framed}
+\end{frame}
+%--------------------------------------------------%
+\begin{frame}[fragile]
+%End of PAge 314. Two graphs on next page
+%------------------------%
+% Page 315 - very Little Content on this page
+% 2 Diagrams
+\textbf{Remark}
+The previous example mapped continuous variables to \texttt{fill}, but discrete values could have also have been used. 
+It is often easier to interpret the data if the data has been discretized.
+For example, we could categorize the values into quantiles and show thos quantiles.
+(Next Example)
+
+%End of Page 315
+
+
+\end{frame}
+
+
+%------------------------%
+\begin{frame}[fragile]
+% Page 316/7
+\begin{framed}
+\begin{verbatim}
+
+ggplot(crimes(aes(map_id=state,fill=Assault))+
+geom_map(map=state_map,colour="black") + 
+expand_limits(x=state_map$long,y=state_map$lat) +
+co_ordmap("polyconic")
+\end{verbatim}
+\end{framed}
+\end{frame}
+%------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{Themes}
+%Page317
+Making a map with a clean background : removing background elements from a map.
+
+%-----------------------%
+% Page 317/8
+
+\begin{framed}
+\begin{verbatim}
+#Create a theme with many of the 
+# background elements removed.
+theme_clean <-function(base_size=12){
+   require(grid)
+   there_grey(base_size) %+replace%
+       theme(
+         axis.title =element_blank(),
+         axis.text =element_blank(),
+         panel.background =element_blank(),
+         panel.grid =element_blank(),
+          .......
+         )
+        }
+\end{verbatim}
+\end{framed}
+\end{frame}
+%--------------------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{Themes}
+\begin{framed}
+\begin{verbatim}
+ggplot(crimes(aes(map_id=state,fill=assault_q))+
+geom_map(map=state_map,colour="black") + 
+scale_fill_manual(values=pal)+
+expand_limits(x=state_map$long,y=state_map$lat) +
+co_ordmap("poyconic") + 
+labs(fill="Assault Rate \n Percentile")+
+theme_clean()
+
+\end{verbatim}
+\end{framed}
+\end{frame}
+%------------------------------------------------%
+%PAge 319 Top of page
+
+%In some maps it is important to include cotnextual infromation such as longitutda end latitude.
+ 
+%Page 319
+%------------------------------------------------%
+%PAge 319
+%13.20 Creating a map from a shapefile
+
+%Creating a map from an ESRI shapefile.
+\end{document}
+
+%--------------------------------------------------%
+\begin{frame}[fragile]
+%Page 294
+\frametitle{Creating a vector field}
+use \texttt{geom segment}. Lets use the \texttt{isabel} data set.
+
+\begin{framed}
+\begin{verbatim}
+
+
+library{gcookbook)
+islabel
+
+\end{verbatim}
+\end{framed}
+x and y are longtitude and latitude values respectively.
+Z is the height in kilometres.
+
+The vx,vy and vz are windspeed components in each of the directions (m/s).
+Speed is the windspeed.
+
+\end{frame}
+%--------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{Vector Fields}
+%Page 297
+We can map speed to colour. We'll also ass a map of 
+the USA and zoom in on the area of interest,as shown in the graph on the right.
+
+%-----------%
+%PAge 298
+\begin{framed}
+\begin{verbatim}
+usa <- map_data("usa")
+scale_colour_continuous(low="grey80",high="darkred")+
+geom_path(aes(x=long,y=lat,group=group),data=usa)+
+ggplot(islicesub, aes(x=x,y=y)) + geom_segment(aes(xend =x +vx/50,vend=y+vy/50,colour=speed),
+\end{verbatim}
+\end{framed}
+%-----------%
+\end{frame}
+%--------------------------------------------------%
+\begin{frame}[fragile]
+%PAge 299
+The \textbf{\textit{isabel}} data set has three-dimensional, so we can make a faceted graph of the data.
+\begin{framed}
+\begin{verbatim}
+#Page 299
+ggplot(isub,aes(x=x, y=y)) + + geom_segment(aes(xend =x +vx/50,vend=y+vy/50,colour=speed),
+scale_colour_continuous(low="grey80",high="darkred")+
+facet_wrap(-z)
+\end{verbatim}
+\end{framed}
+\end{frame}
+%-----------------------------------------------%
+%Section 13.17
+%-----------------------------------------------%
+%------------------------------------------------%
+%Page 319
+\begin{frame}
+\frametitle{Creating a map from an ESRI Shapefile}
+
+Load the shapefile using \texttt{readShapePoly()} function from the map tools package.
+Convert it to a dataframe using the command fortify
+Plot it.
+
+\begin{framed}
+\begin{verbatim}
+
+taiwan_shp <-readShapePoly(".....shp")
+taiwan_map <-fortify(taiwan_shp)
+
+ggplot(taiwan_map, aes(x=long,y=lat,group=group)) + geom_path()
+
+\end{verbatim}
+\end{framed}
+\end{frame}
+%------------------------------------------------%
+%PAge 319
+%13.20 Creating a map from a shapefile
+
+Creating a map from an ESRI shapefile.
+
+
+%------------------------------------------------%
+%Page 321
+It is actually possible to pass athe SpatialPolygonDataFrame objects directly to ggplot() command, which will automatically ``fortify" it.
+
+Doing the operation into stages allows the user to inspect the data first, and also to merge it with other data.
+\end{document}

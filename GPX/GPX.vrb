@@ -1,0 +1,9 @@
+Here is the \texttt{R} command sequence that loads and runs the program:
+
+\begin{framed}
+\begin{verbatim}
+> source("ExtractWaypoints.r")
+> TheDriver()
+\end{verbatim}
+\end{framed}
+Here are the plots. Note that two 'outlier' waypoints are omitted from the right-side plot as they do not fall within the tracks.

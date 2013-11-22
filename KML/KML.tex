@@ -1,0 +1,96 @@
+\documentclass{beamer}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{framed}
+
+\begin{document}
+
+\begin{frame}
+\Large
+\begin{enumerate}
+\item Create Maps With \texttt{R} Geospatial Classes and Graphics Tools (\textit{Making Maps})
+\item Read and write ESRI Shape Files (\textit{ESRI})
+\item Display T Spatial Objects with Google Maps and Google Earth (\textit{KML})
+\item Read and Display Data from GPS Devices Using \texttt{R} (\textit{GPX})
+\item Overlay Points on Satellite Image / Extract Pixel Values (\textit{Raster})
+\end{enumerate}
+\end{frame}
+
+%---------------------------%
+\begin{frame}
+\huge
+Display T Spatial Objects with Google Maps and Google Earth
+\\ Part 3
+\end{frame}
+
+\begin{frame}
+\frametitle{Display R Spatial Objects With Google Maps/Google Earth}
+\begin{itemize}
+\item This section creates Google Maps / Google Earth-compatible Keyhole Markup Language (KML) files from R Spatial objects containing data from 
+vector ESRI Shape Files and raster GeoTiff files.
+\item  The case demonstrates three techniques for writing R Spatial objects into KML files, and one technique for reading KML files into R Spatial objects.
+\item reading polygon KML files into R Spatial objects.
+\end{itemize}
+\end{frame}
+%---------------------------------------%
+\begin{frame}
+\frametitle{Display R Spatial Objects With Google Maps/Google Earth}
+\begin{itemize}
+\item This case also introduces the functionality of the recently released RGoogleMaps package. 
+\item We can use of this package to download a static GoogleMaps map image and use it as the background for R spatial object plots. 
+\end{itemize}
+% Click here to step directly to this section of the Use Case.
+
+%Download data and R Code for this Use Case
+\end{frame}
+%---------------------------------------%
+\begin{frame}
+\frametitle{Requirements}
+Within R, read vector ESRI Shape Files and a raster GeoTIFF file into R Spatial objects, then create Keyhole Markup Language (KML) files for display in GoogleMaps / Google Earth.
+\end{frame}
+%---------------------------------------%
+\begin{frame}
+
+To add R Spatial objects to GoogleMaps / GoogleEarth sessions:
+\begin{itemize}
+\item Read each ESRI Shape File into R Spatial objects, then translate and write them into KML files.
+\item Within GoogleMaps create/select a background map containing the objects in each file. Then, import the KML file into the map. 
+\item Within GoogleEarth, simply open the KML file; GoogleEarth will read the KML file's spatial metadata and overlay the features on top of a satellite image of the underlying location.
+\end{itemize}
+\end{frame}
+
+%---------------------------------------%
+\begin{frame}
+
+Creating KML files for R Spatial objects: Three techniques
+
+\begin{itemize}
+\item \texttt{kmlLine()}or kmlPolygon()\texttt{functions, included in maptools package, to convert line and p}olygon objects to SEPARATE kml files.
+
+\item \texttt{writeOGR(}) function, included in the rgdal package. This is the most convenient and straightforward method.
+ \item 
+The R \texttt{system()} command invokes the \texttt{ogr2ogr()} method,  provided by the open-source FWTools  package, to create KML files from Shape Files (Note: requires installation of FWTools library on host computer).
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\textbf{Technique 1:}\\ 
+maptools package methods: kmlLine(), kmlPolygon(), and kmlOverlay()
+\begin{itemize}
+\item This method uses R maptools package functions; currently, maptools has (had?) no methods that convert Point objects to KML format. \item Instead, use writeOGR, used here and in Technique 2, to write \texttt{Point} objects to a KML file.
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\begin{itemize}
+\item Note: To most accurately align R Spatial object features with corresponding Google Maps/Google Earth features, the R objects should be transformed 
+into the map projection used by Google. 
+\item Google Earth uses a Cylindrical Latitude/Longitude projection; Google Maps uses a variation of the Spherical Mercator projection. 
+\item These projections are represented by EPSG and Proj.4 codes used by R spatial coordinate transformation methods. 
+\item The Technique 1 script for this case gives the codes for both projections used by Google, and transforms the Spatial objects 
+into the Google Earth-compatible coordinate system.
+\end{itemize}
+\end{frame}
+%---------------------------------------%
+\begin{frame}

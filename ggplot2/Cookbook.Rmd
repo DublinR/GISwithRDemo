@@ -1,0 +1,115 @@
+Maps with ggplot2
+========================================================
+
+### Loading Up The Relevant Packages
+
+```{r}
+library(maps)
+library(ggplot2)
+library(RColorBrewer)
+
+states_map <- map_data("state")
+```
+
+Plot 1 : USA states Map
+
+```{r fig.width=7, fig.height=6}
+ggplot(states_map, 
+       aes(x=long,y=lat,group=group)) + 
+  geom_polygon(fill="white",colour="black")
+
+```
+
+Plot 2 : Projection
+
+```{r fig.width=7, fig.height=6}
+
+ggplot(states_map, aes(x=long,y=lat,group=group)) + 
+  geom_path() + coord_map("mercator")
+
+```
+
+Plot 3 : Map of the World
+
+You can also embed plots, for example:
+
+```{r}
+
+world_map <- map_data("world")
+head(world_map)
+
+```
+
+
+
+You can also embed plots, for example:
+
+```{r fig.width=7, fig.height=6}
+
+east_asia <- map_data("world",region=c("Japan","China","North Korea","South Korea"))
+ggplot(east_asia, aes(x=long,y=lat,group=group,fill=region)) + 
+  geom_polygon(colours="black")+
+  scale_fill_brewer(palette="Set2")
+```
+
+You can also embed plots, for example:
+
+```{r fig.width=7, fig.height=6}
+#Other Palettes : Accent,Paired, Set1
+
+
+ggplot(east_asia, aes(x=long,y=lat,
+                      group=group,fill=region)) + 
+  geom_polygon(colours="black")+
+  scale_fill_brewer(palette="Set1")
+```
+### Ireland
+The main issue with this map is that it is constructed using a very small data set.
+
+```{r}
+IrlSet <- grep("Irel",world_map$region)
+# IrlMap <- world_map[IrlSet,]
+Ireland <- map_data("world",region=c("Ireland"))
+```
+
+```{r fig.width=7, fig.height=6}
+
+ggplot(Ireland , aes(x=long,y=lat,group=group,fill=region)) + 
+  geom_polygon(colours="black")+
+  scale_fill_brewer(palette="Set2")
+# Not Great !
+```
+
+### Some European Countries
+The main issue with this map is that it is constructed using a very small data set.
+
+```{r}
+
+NWE <- map_data("world",region=c("Portugal","Ireland","Italy","Greece","Spain"))
+
+```
+
+```{r fig.width=7, fig.height=6}
+ggplot(NWE , aes(x=long,y=lat,group=group,fill=region)) + 
+  geom_polygon(colours="black")+
+  scale_fill_brewer(palette="Set1")
+```
+
+```{r}
+
+NZ1 <- map_data("world",region="New Zealand")
+NZ1 <- subset(NZ1, long>0 &lat> -48)  #trim off outlying islands
+```
+```{r fig.width=7, fig.height=6}
+
+ggplot(NZ1,aes(x=long,y=lat,group=group)) + geom_path()
+```
+
+Same map from a more detailed data source
+
+```{r fig.width=7, fig.height=6}
+NZ2 <- map_data("nz")
+ggplot(NZ2,aes(x=long,y=lat,group=group)) + geom_path()
+
+```
+

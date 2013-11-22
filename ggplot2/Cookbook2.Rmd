@@ -1,0 +1,89 @@
+Maps with ggplot2 : Choropleth Maps
+========================================================
+
+First, make sure packages are installed and loaded.
+
+```{r}
+#install.packages("plyr")
+library(ggplot2)
+library(maps)
+library(plyr)
+```
+
+Set up our Data Set. Comprised of the the USA arrests data set and the states data.
+
+
+```{r}
+crimes <-data.frame(state =tolower(rownames(USArrests)),USArrests)
+head(crimes)
+```
+
+
+
+```{r}
+#library(maps)
+states_map <- map_data("state")
+crime_map <- merge(states_map,crimes,by.x="region",by.y="state")
+head(crime_map)
+
+```
+
+### Crime Data Set
+Let's look at the Assault data set in particular
+
+```{r} 
+crimes <-data.frame(state =tolower(rownames(USArrests)),USArrests)
+head(crimes)
+```
+
+### Crime Data Set
+Let's look at the Assault data set in particular
+
+```{r} 
+
+#library(maps)
+states_map <- map_data("state")
+crime_map <- merge(states_map,crimes,by.x="region",by.y="state")
+head(crime_map)
+# Use this package for the arrange function().
+crime_map <- arrange(crime_map,group,order)
+head(crime_map)
+```
+
+### Crime Data Set
+Let's look at the Assault data set in particular
+
+```{r} 
+dim(crime_map)
+summary(crime_map$Assault)
+unique(crime_map$Assault)
+#some states may have some value.
+```
+
+
+
+
+
+Choropleth Maps
+
+```{r fig.width=7, fig.height=6}     
+ggplot(crimes,aes(map_id=state,fill=Assault))+
+   geom_map(map=states_map,colour="black")+ 
+   scale_fill_gradient2(low="#559999",mid="grey90",high="#BB650B",
+                            midpoint=median(crimes$Assault)) +
+   expand_limits(x=states_map$long,y=states_map$lat) +
+         coord_map("polyconic")
+```
+
+Choropleth Maps
+
+```{r fig.width=7, fig.height=6}     
+ggplot(crimes,aes(map_id=state,fill=Assault))+
+geom_map(map=states_map,colour="black")+ 
+scale_fill_gradient2(low="#559999",mid="grey90",high="#BB650B",
+                              midpoint=median(crimes$Assault)) +
+         expand_limits(x=states_map$long,y=states_map$lat) +
+         coord_map("polyconic")
+       
+
+```

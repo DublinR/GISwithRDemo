@@ -1,0 +1,133 @@
+\documentclass{beamer}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{framed}
+
+\begin{document}
+
+\begin{frame}
+\Large
+\begin{enumerate}
+\item Create Maps With \texttt{R} Geospatial Classes and Graphics Tools (\textit{Making Maps})
+\item Read and write ESRI Shape Files (\textit{ESRI})
+\item Display T Spatial Objects with Google Maps and Google Earth (\textit{KML})
+\item Read and Display Data from GPS Devices Using \texttt{R} (\textit{GPX})
+\item Overlay Points on Satellite Image / Extract Pixel Values (\textit{Raster})
+\end{enumerate}
+\end{frame}
+
+%---------------------------%
+\begin{frame}
+\huge
+Create Maps With \texttt{R} Geospatial Classes and Graphics Tools
+\\ Part 1
+\end{frame}
+%----------------%
+\begin{frame}
+\frametitle{Create Maps With R Geospatial Classes and Graphics Tools}
+\begin{itemize}
+
+\item R includes a rich set of plotting functions that can be applied to spatial data. \item This example demonstrates how to generate publication-quality maps using these functions, which in many cases can eliminate the need to use dedicated GIS software.
+
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\frametitle{Overview}
+Here are the typical steps required to produce a map:
+
+\begin{itemize}
+
+
+\item Acquire and read the relevant data layers into R.
+\item If necessary, transform the data layers into a common spatial reference system, e.g. using the \texttt{spTransform} function in the rgdal package to reproject vector data. \item For simplicity, the examples below use data that all share the same coordinate system.
+
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\begin{itemize}
+\item If necessary, convert the \texttt{R} objects into whatever type is required by the desired plotting function. 
+\item This is unlikely to be necessary unless using one of the R spatial packages that has not adopted the core spatial classes defined in sp, as illustrated by the PBSmapping plotting code below.
+\item Plot the spatial data layers in the appropriate order and using desired sizing, color, etc. 
+\item This often requires an iterative process of trial-and-error, but ultimately yields code that can saved and used to regenerate the same map or to create another map with different data inputs.
+
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\frametitle{Example 1: Thematic map with points, lines, and polygons}
+
+\begin{itemize}
+\item This example produces a simple thematic map showing the location of major dams in the western United States. \item The data layers are available from the USGS as ESRI shapefiles, a commonly used file format for storing vector geospatial data. \item The map includes point, line, and polygon data layers along with dam labels, a legend, and optional coordinates along the axes.
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\frametitle{Output maps and R code}
+Using sp with base R graphics:
+\begin{itemize}
+\item The \textbf{sp} package provides the basis for many other spatially oriented R packages, as it defines a set of classes that have become the de facto standard spatial data types in \texttt{R}. 
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\begin{itemize}
+\item However, \textbf{sp} also provides some user-level functionality in its own right, including spatial extensions to commonly used R base graphics functions such as plot, points, and lines. 
+\item This makes map production a fairly straightforward task for users who are familiar with conventional R graphics functions.
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\frametitle{Using PBSmapping}
+\begin{itemize}
+
+\item The \textbf{PBSmapping }package, developed by a team of fisheries scientists, can also be used for generating maps. \item  However, note that PBSmapping uses its own custom-defined spatial data types that are optimized to work with various specialized package functions. 
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\begin{itemize}
+\item This makes it harder to take advantage of functions defined in the numerous packages that are built on \textbf{sp}, although as illustrated in the code used in this example, the maptools package does provide functions that convert between the different formats.
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\frametitle{Example 2: Raster base map with point and polygon overlays}
+\begin{itemize}
+\item The second sample map displays a satellite image of the Olympic Peninsula region of Washington state along with the outlines of the corresponding counties and the centroid point for each county.
+\item  This example demonstrates how to construct a map consisting of multiple, spatially coinciding data layers, in which the base layer is a grid or raster image and the remaining layers are point, line, and/or polygon vector layers.
+\item  As above, all of the data layers share the same map projection.
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+Here are the three base layers:
+\begin{itemize}
+\item Raster base (Raster Grid: Satellite Image)	
+\item Polygons base	(Polygons: Counties)
+\item Points base (Points: County Centroids)
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\frametitle{
+Output maps and R code}
+\textbf{Using sp with lattice graphics:}
+\begin{itemize}
+\item The sp package extends plotting functionality of the lattice package as well as that of the base \texttt{R} graphics system as illustrated above. 
+\item Although lattice functions tend to have more complicated syntax designed to handle the details of creating highly customizable multi-paneled figures (which is not relevant here), for plotting spatial data they also provide niceties such as easy insertion of scale bars and north arrows. 
+\item 
+In addition, the spplot function can accommodate raster data, although we'll see how the raster package lets us use the base plot function for this purpose too.
+\end{itemize}
+\end{frame}
+%----------------%
+\begin{frame}
+\frametitle{Using sp and raster with base R graphics:}
+\begin{itemize}
+\item 
+Although the \textbf{sp} package can work with raster data, the newer raster package offers considerably more capabilities, including an extension of the base plot function for producing raster maps upon which other figure elements can be superimposed.\item  Again, this makes map production a fairly straightforward task for users who are familiar with conventional \texttt{R} graphics functions.\item  Also note that the code below produces the output map approximately 10 times faster than the code using \texttt{spplot} above.
+\end{itemize}
+\end{frame}
+\end{document}
