@@ -1,0 +1,47 @@
+ggmap demonstration
+========================================================
+
+
+```{r}
+library(ggplot2)
+library(ggmap)
+library(RgoogleMaps)
+
+```
+**Trinity College Dublin**
+
+```{r}
+TCD <- "Trinity College Dublin"
+geocode(TCD)
+```
+
+
+```{r fig.width=7, fig.height=6}
+qmap(TCD,zoom=14)
+GetMap(center = c(lat = 42, lon = -76), size = c(640, 640),zoom = 12)
+```
+```{r fig.width=7, fig.height=6}
+qmap(location = "baylor university")
+```
+```{r fig.width=7, fig.height=6}
+qmap(location = "baylor university", zoom = 14)
+```
+```{r fig.width=7, fig.height=6}
+qmap(location = "baylor university", zoom = 14, source = "osm")
+```
+```{r fig.width=7, fig.height=6}
+qmap(location = "baylor university", zoom = 14, source = "osm", scale = 20000)
+```
+```{r fig.width=7, fig.height=6}
+qmap(location = "baylor university", zoom = 14, maptype = "satellite")
+```
+```{r fig.width=7, fig.height=6}
+qmap(location = "baylor university", zoom = 14, maptype = "hybrid")
+```
+```{r fig.width=7, fig.height=6}
+qmap(location = "baylor university", zoom = 14, maptype = "toner", source = "stamen")
+```
+```{r fig.width=7, fig.height=6}
+qmap(location = "baylor university", zoom = 14, maptype = "watercolor", source = "stamen")
+```
+
