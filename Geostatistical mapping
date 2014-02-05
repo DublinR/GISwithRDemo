@@ -1,0 +1,8 @@
+Geostatistical mapping
+========================
+The objective of geostatistical mapping is to generate spatial predictions of some target variable for a study area of interest. The outputs from geostatistical mapping are usually standard:
+
+* Observed values (point locations)
+* Geostatistical model (i.e. a list of fitted parameters)
+* Predicted values (gridded map)
+* Results of validation (point locations)
