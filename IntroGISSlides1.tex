@@ -1,0 +1,90 @@
+\documentclass{beamer}
+
+% ASDA with R by Roger Bivand
+% KML type
+% RworldMaps by Any South
+% ggmap - hadley Wickham
+% spatial.ly is written by James Cheshire. James is a lecturer at the UCL Centre for Advanced Spatial Analysis 
+%-----------------------------------%
+\usepackage{default}
+
+
+
+\begin{document}
+
+\begin{frame}
+\begin{itemize}
+\item First, you have the maps, mapproj and maptools packages, that give you a wide variety of map functions, projections, and so on to create about any map you can think of.
+
+\item Then there is the sp package, which -among other things- allows you to plot any kind of data you load from the GADM database.
+
+\item But most of all, there is the spatial projects page of R which gives you a whole lot more information, including links to mailing lists, to get going with R and spatial data. And if that's not enough, you have the CRAN Task View page for spatial data, listing 100+ packages to do what you want to do.
+\end{itemize}
+\end{frame}
+%-----------------------------------%
+\begin{frame}
+\begin{itemize}
+\item The Rgis (composed of R packages terrain, RemoteSensing, gdistance ..) project look very promising. You can test the package on r-forge. For raster data (DEM, altitude,...) handling there is the excellent raster package, and for other task like polygon clipping and more complicated stuff you can use rgeos (bidding of GEOS libs), maptools (for format exchange) or PBSmapping, and of course the sp package and the companion book Applied Spatial Analysis with R (Bivand, Pebsema and Rubio 2008) is a must.
+
+\item On the other way, you can also link R to GIS like grass (spgrass6), saga (RSAGA), even QGIS and arcGIS but i don't use them.
+
+\item finally you have to take a look at \texttt{http://cran.r-project.org/web/views/Spatial.html}
+\end{itemize}
+\end{frame}
+%-----------------------------------%
+\begin{frame}[fragile]
+\begin{verbatim}
+library(ggmap)
+\end{verbatim}
+\end{framed}
+%-----------------------------------%
+% ggmap
+%-----------------------------------%
+\begin{frame}[fragile]
+\begin{verbatim}
+geocode("Dublin")
+geocode("Mullingar")
+geocode("Athlone")
+\end{verbatim}
+\end{framed}
+%-----------------------------------%
+% RgoogleMaps
+%-----------------------------------%
+\begin{frame}[fragile]
+\begin{verbatim}
+library(RgoogleMap)
+\end{verbatim}
+\end{framed}
+%-----------------------------------%
+\begin{frame}[fragile]
+\begin{verbatim}
+map('worldHires', col=1:10)
+map('worldHires', 'Switzerland')
+title('Switzerland')
+install.packages("mapdata")
+ins
+
+library(maps)
+library(mapdata)
+map("worldHires","Mexico"
+ xlim=c(-118.4,-86.7)
+ ylim=c(14.5321,32.71865),
+ col="blue",fill=TRUE)
+\end{framed}
+%-----------------------------------%
+\begin{frame}[fragile]
+\begin{verbatim}
+library(maptools) #for shapeﬁles
+‘readShapePoly’
+Read in a polygon shape layer (e.g., administrative
+boundaries, national parks, etc.). This means the layer is of
+type “polygon” (i.e. not lines, such as roads or rivers)
+‘readShapeLines’
+read in a line shape layer
+‘readShapePoints’
+read in a point shape layerlibrary(maptools) #for shapeﬁles
+‘readShapePoly’
+\end{frame}
+maptools, RColorBrewer, classInt
+%-----------------------------------%
+\end{document}

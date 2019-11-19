@@ -1,0 +1,37 @@
+Moran's I is a measure of spatial autocorrelation developed by Patrick Alfred Pierce Moran.
+
+Spatial autocorrelation is characterized by a correlation in a signal among nearby locations in space. 
+
+Spatial autocorrelation is more complex than one-dimensional autocorrelation because spatial correlation is multi-dimensional (i.e. 2 or 3 dimensions of space) and multi-directional.
+
+Moran's I is defined as
+
+\[ I = \frac{N} {\sum_{i} \sum_{j} w_{ij}} \frac {\sum_{i} \sum_{j} w_{ij}(X_i-\bar X) (X_j-\bar X)} {\sum_{i} (X_i-\bar X)^2}  \]
+where N is the number of spatial units indexed by i and j; X is the variable of interest; \bar X is the mean of X; and w_{ij} is an element of a matrix of spatial weights.
+
+The expected value of Moran's I under the null hypothesis of no spatial autocorrelation is
+
+ E(I) = \frac{-1} {N-1} 
+Its variance equals
+
+\[ \operatorname{Var}(I) = \frac{NS_4-S_3S_5} {(N-1)(N-2)(N-3)(\sum_{i} \sum_{j} w_{ij})^2} - (E(I))^2 \]
+where
+
+ \[ S_1 = \frac {1} {2} \sum_{i} \sum_{j} (w_{ij}+w_{ji})^2   \]
+ \[ S_2 = \sum_{i} ( \sum_{j} w_{ij} + \sum_{j} w_{ji})^2 \]
+ \[ S_3 = \frac {N^{-1} \sum_{i} (x_i - \bar x)^4} {(N^{-1} \sum_{i} (x_i - \bar x)^2)^2}  \]
+ \[ S_4 = (N^2-3N+3)S_1 - NS_2 + 3 (\sum_{i} \sum_{j} w_{ij})^2 \]
+ \[ S_5 = (N^2-N) S_1 - 2NS_2 + 6(\sum_{i} \sum_{j} w_{ij})^2 \]
+
+Negative values indicate negative spatial autocorrelation and the inverse for positive values. 
+
+Values range from −1 (indicating perfect dispersion) to +1 (perfect correlation). A zero value indicates a random spatial pattern. 
+
+For statistical hypothesis testing, Moran's I values can be transformed to Z-scores in which values greater than 1.96 or smaller than −1.96 indicate spatial autocorrelation that is significant at the 5% level.
+
+Moran's I is inversely related to Geary's C, but it is not identical. Moran's I is a measure of global spatial autocorrelation, while Geary's C is more sensitive to local spatial autocorrelation.
+%----------------------------------------------%
+\subsection{Uses}
+Moran's I values is widely used in the analysis of geographic differences in health variables. 
+
+It has been used to characterize the impact of lithium concentrations in public water on mental health.[5] It has also recently been used in dialectology to measure the significance of regional language variation.[6]

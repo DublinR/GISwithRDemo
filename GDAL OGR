@@ -1,0 +1,3 @@
+GDAL/OGR
+The Geospatial Data Abstraction Library (GDAL/OGR) is an open-source, cross-platform set of libraries and low-level tools for working with spatial data in many formats. Although GDAL itself is geared towards raster data, it provides vector support via the OGR Simple Features Library. The term GDAL is often used to refer jointly to the full suite of GDAL and OGR functionality. GDAL/OGR plays a particularly important role in the open-source geospatial software world as a file import/export/translation engine, as it can read (and often write) many spatial file formats. The associated command-line utilities can also be used to accomplish a 
+variety of common tasks such as reprojecting, merging, and subsetting spatial data.

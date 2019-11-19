@@ -1,0 +1,19 @@
+GADM is a spatial database of the location of the world's administrative boundaries, and as Claudia Engel discovered the map information is available as native R objects that can be plotted directly with the spplot function (from the sp package). For example, here's how to load the data for Switzerland, and then plot each canton with a color denoting its primary language:
+
+library(sp)
+con <- url("http://gadm.org/data/rda/CHE_adm1.RData")
+print(load(con))
+close(con)
+
+
+
+language <- c("german", "german", "german","german",
+ "german","german","french", "french",
+ "german","german","french", "french", 
+ "german", "french","german","german",
+ "german","german","german", "german",
+ "german","italian","german","french",
+ "french","german","german")
+gadm$language <- as.factor(language)
+col = rainbow(length(levels(gadm$language)))
+spplot(gadm, "language", col.regions=col, main="Swiss Language Regions")

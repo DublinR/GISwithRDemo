@@ -1,0 +1,203 @@
+head()
+length()
+rbind()
+cbind()
+
+x=c(x,16)
+
+adding a value
+deleting a value
+x=x[-9]
+
+commenting #######
+
+
+basic R editor
+ - new script
+ - updating script
+ - running script
+ -
+
+Introduction to R
+ - What is R
+ - History of R
+
+Simple R Programming
+ - Important R functions
+  - help()
+  - summary()
+		"summary" is a generic function used to produce result summaries of the results of various model fitting functions. 
+		The function invokes particular methods which depend on the class of the first argument. 
+  - attach()
+  - data()
+  	- Loads specified data sets, or list the available data sets. 
+  - ?
+  - data.entry
+  - c()
+		- Combine Values into a Vector or List
+  - assignment operator
+  - Sys.time and Sys.Date returns the system's idea of the current date with and without time. 
+  - q()
+
+
+mode() - storage mode of a data object( data structure)
+
+The expression as(object, value) is the way to coerce an object to a particular class. 
+
+ - vectors
+
+vector produces a vector of the given length and mode.
+as.vector, a generic, attempts to coerce its argument into a vector of mode mode (the default is to coerce to whichever mode is most convenient).
+is.vector returns TRUE if x is a vector of the specified mode having no attributes other than names. It returns FALSE otherwise.  
+
+
+ 	- integer
+	Creates or tests for objects of type "integer".
+		integer(length = 0)
+		as.integer(x, ...)
+		is.integer(x)
+ 	- Character
+	Create or test for objects of type "character".
+		character(length = 0)
+		as.character(x, ...)
+		is.character(x)
+	-logical
+	Create or test for objects of type "logical", and the basic logical constants.
+		logical(length = 0)
+		as.logical(x, ...)
+		is.logical(x)
+	-numeric
+	Creates or coerces objects of type "numeric". 
+		numeric(length = 0)
+		as.numeric(x, ...)
+		is.numeric(x)
+
+
+
+
+ - Mathemathical functions
+  	- operators "+","-","/","*","^"
+	- sin(), abs(), cos(), exp, log(), log()
+	- complex numbers
+
+    * abs, sign, sqrt, floor, ceiling, trunc, round, signif
+    * exp, log, expm1, log1p, cos, sin, tan, acos, asin, atan, cosh, sinh, tanh, acosh, asinh, atanh
+    * lgamma, gamma, digamma, trigamma
+    * cumsum, cumprod, cummax, cummin 
+
+Special mathematical functions related to the beta and gamma functions.
+Usage
+
+beta(a, b)
+lbeta(a, b)
+
+gamma(x)
+lgamma(x)
+psigamma(x, deriv = 0)
+digamma(x)
+trigamma(x)
+
+choose(n, k)
+lchoose(n, k)
+factorial(x)
+lfactorial(x)
+
+
+ - simple statistical functions
+ 	- measures of centrality
+		-mean(),median()
+	- measures of variability
+		-sd(), mad(), IQR()
+		-range() returns a vector containing the minimum and maximum of all the given arguments. 
+		-IQR() computes interquartile range of the x values.
+        - quantiles
+
+ -var, cov and cor compute the variance of x and the covariance or correlation of x and y if these are vectors. If x and y are matrices then the covariances (or correlations) between the columns of x and the columns of y are computed.
+ -cov2cor scales a covariance matrix into the corresponding correlation matrix efficiently. 
+
+Pearson's Chi-squared Test for Count Data
+chisq.test performs chi-squared contingency table tests and goodness-of-fit tests.
+
+
+more data structures
+ - lists
+  	- list() Functions to construct, coerce and check for both kinds of R lists. 
+ - vectors
+ - dataframes
+ - 
+
+Packages
+ - What are pacakges
+	- extending the program
+ - where are packages to be found
+ - some notable packages
+ - installing packages
+ - loading packages
+ - updating packages
+
+data import and export
+ - If you have access to Excel, export the data you want from Excel in tab-delimited or comma-separated form, and use read.delim or read.csv to import it into R.
+ - sink()
+
+
+Code Editors
+ - Tinn-r
+ - installing tinn-r
+        - source forge
+        - rkward
+ 	- troubleshooting
+ - opening and saving projects
+ 
+
+Probability distributions
+ - Continuous: Normal / Student's 't' / Chi-square distribution
+ - discrete: Binomial / Poisson / geometric distribution
+
+
+Inference procedures
+ - t.test
+	Performs one and two sample t-tests on vectors of data. 
+ - prop.test
+        prop.test can be used for testing the null that the proportions (probabilities of success) in several groups are the same, or that they equal certain given values.
+ - Kolmogorov-Smirnov test      [ks.test()]
+	Performs one or two sample Kolmogorov-Smirnov tests. 
+ - Anderson Darling test        [ad.test()]
+ - Grubbs test for outliers     [Grubbs.test()]
+ - Dixon test for outliers
+ - correlation test 		[cor.test()]
+ - Analysis of variance.	[anova()]
+ 
+
+Logical functions and coercion
+ - as.vector
+ - is.na
+ - NA is a logical constant of length 1 which contains a missing value indicator.
+ - Missing value/ not available. 
+
+
+Regression models and bivariate data
+ - simple linear regression 
+ - multiple linear regression 
+ - lm()
+ - lm is used to fit linear models. It can be used to carry out regression, single stratum analysis of variance and analysis of covariance 
+
+Control Loops
+ - do 
+ - if 
+
+Writing Functions
+
+Goodness of Fit statistics
+ - AIC()
+
+
+Extreme value theory
+ - Basic Theory
+ - EVT distributions
+ 
+Anscombe's quartet is the name for a famous data set created by Frank Anscombe to illustrate the importance of plotting data.
+
+The mean for al four data sets is 9.00,3.32, 7.5,2.03
+the pearson's correlation coefficient is the same for all 
+
+

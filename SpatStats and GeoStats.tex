@@ -1,0 +1,36 @@
+\subsection{Spatial Statistics}
+\begin{verbatim}
+### SPATIAL STATISTICS ###
+ 
+## Point pattern analysis
+  library(spatial)
+  library(spatstat)
+  library(spatgraphs)
+  library(ecespa)    # ecological focus
+  # etc (see Spatial Task View)
+ 
+  # example
+  data(fig1)
+  plot(fig1)    # point pattern
+  data(Helianthemum)
+  cosa12 <- K1K2(Helianthemum, j="deadpl", i="survpl", r=seq(0,200,le=201),
+         nsim=99, nrank=1, correction="isotropic")
+  plot(cosa12$k1k2, lty=c(2, 1, 2), col=c(2, 1, 2), xlim=c(0, 200),
+         main= "survival- death",ylab=expression(K[1]-K[2]), legend=FALSE)
+ 
+\end{verbatim}
+\subsection{Geostatistics}
+The ackage \textbf{\textit{gstat}} provides a wide range of uni-ariable and multivariable geostatistical modelling, prediction and simulation functions.
+
+\begin{verbatim}
+### Geostatistics ###
+  library(gstat)
+  library(geoR)
+  library(akima)   # for spline interpolation
+  # etc (see Spatial Task View)
+ 
+ 
+  library(spdep)   # dealing with spatial dependence
+ 
+ \end{verbatim}
+When analyzing geospatial data, describing the spatial pattern of a measured variable is of great importance.  A common way of visualizing the spatial autocorrelation of a variable is a variogram plot

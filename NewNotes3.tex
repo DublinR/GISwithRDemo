@@ -1,0 +1,180 @@
+\documentclass[12pt]{article}
+\usepackage{framed}
+\usepackage{amsmath}
+%opening
+\title{GIS with \texttt{R}}
+\author{Dublin \texttt{R}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+A series of eight short demonstrations of R's mapping and spatial statistics capability.
+\end{abstract}
+%----------------------------------------------- %
+\newpage
+\tableofcontents
+\newpage
+%----------------------------------------------- %
+\section*{Overview of Workshop}
+\begin{enumerate}
+\item The \textit{\textbf{maproj}} package
+\item The \textit{\textbf{ggmap}} package (David Kahle and Hadley Wickham )
+\item 
+\end{enumerate}
+
+%----------------------------------------------- %
+\newpage
+\section{New Book}
+Creating a geographical map using \textit{\textbf{ggplot2}}
+\begin{framed}
+\begin{verbatim}
+library(maps)
+states_map <-map_data("state")
+
+ggplot(states_map, aes (x=long,y=lat,group=group)) +
+ geom_polygon(fill="white",colour="black")
+
+
+ggplot(states_map, aes (x=long,y=lat,group=group)) + 
+geom_path() + coord_map(fill="mercator")
+
+\end{verbatim}
+\end{framed}
+
+The \texttt{map$\_$data()} returns a data frame with the following columns:
+\begin{itemize}
+\item \texttt{long}
+\item \texttt{lat}
+\item \texttt{group}
+\item order
+\item region
+\item subregion
+\end{itemize}
+
+Available Maps : 
+world, nz,france,italy,usa, state ,county,
+%----------------------------------------------- %
+% Maps
+%
+\newpage
+\section{Using \textit{map} package}
+\textit{\textbf{maps:}}: Draw Geographical Maps
+
+Display of maps. Projection code and larger maps are in separate packages (mapproj and mapdata).
+
+%----------------------------------------------- %
+% Maptools
+%
+
+\newpage
+\section{Using \textit{maptools} package}
+\textit{\textbf{maptools}}: Tools for reading and handling spatial objects (Roger Bivand)
+
+\bigskip
+
+\textit{Set of tools for manipulating and reading geographic data, in particular ESRI shapefiles; C code used from shapelib. It includes binary access to GSHHS shoreline files.}
+
+\textit{The package also provides interface wrappers for exchanging spatial objects with packages such as PBSmapping, spatstat, maps, RArcInfo, Stata tmap, WinBUGS, Mondrian, and others.}
+%----------------------------------------------- %
+\newpage
+% New Book Page 315
+\section{Using \textit{mapdata} for making maps}
+\
+%----------------------------------------------- %
+\newpage
+\section{Cholorpleth Map}
+% New Book Page 317
+Maps coloured aoording to variable valued
+
+\begin{framed}
+\begin{verbatim}
+crimes <- data.frame(state= tolower(rownames(USArrests)),USArrests)
+
+library(maps)
+states_map <- map_data("state")
+
+crime_map= merge(state_map,crimes,by.x="region", by.y="state")
+\end{verbatim}
+\end{framed}
+
+\subsection*{Diverging Colour Scale.}
+%----------------------------------------------- %
+% ggmap
+% http://blog.revolutionanalytics.com/2012/07/making-beautiful-maps-in-r-with-ggmap.html
+%----------------------------------------------- %
+
+\newpage
+\section{Using \textit{ggmap} for making maps}
+
+%--------------------- %
+\begin{framed}
+\begin{verbatim}
+library(ggmap)
+geocode("Dublin Castle")
+\end{verbatim}
+\end{framed}
+This yields the longtitude (EW) and the latitude (NS) for Dublin Castle.
+
+
+\begin{verbatim}
+> geocode("Dublin Castle")
+...
+Google Maps API Terms of Service : http://developers.google.com/maps/terms
+        lon      lat
+1 -6.266327 53.34387
+\end{verbatim}
+
+\textbf{Exercise:} Try it out for a few other \textit{\textbf{viable}} locations.
+\begin{itemize}
+\item Cork, Rosslare, Limerick, Westport, Sligo, Rockall, Belfast.
+\item New York, Madrid, Rome, Moscow, Auckland, Tokyo
+\end{itemize}
+ 
+\subsection*{A Different Dublin Castle?}
+The Dublin Castle Pub in Cambden Town London.
+\begin{verbatim}
+> geocode("Dublin Castle, Cambden")
+....
+Google Maps API Terms of Service : http://developers.google.com/maps/terms
+         lon      lat
+1 -0.1456995 51.53742 
+\end{verbatim}
+
+%--------------------- %
+\newpage
+\section{RColorBrewer}
+
+
+%--------------------- %
+
+\newpage
+\section{Projected Maps}
+%
+% http://geography.uoregon.edu/GeogR/examples/maps_examples02.htm
+% http://geography.uoregon.edu/GeogR/examples/maps_examples01.htm
+The \texttt{sp} class and \textit{\textbf{maptools}} package provide a mechanism for doing projected maps.  (Note that the projection parameters used in the example here are not really appropriate for the area being plotted, but were chosen to make the fact that the data are projected evident.)
+
+First, load the \textit{\textbf{rgdal}} package
+%-------------- %
+\begin{verbatim}
+library(rgdal)
+\end{verbatim}
+%-------------- %
+This example plots a projected map of Oregon climate station data where the data are contained in the  in the orstations shapefile.  The first block of code does some set up (class intervals and colors, etc.)
+\begin{framed}
+\begin{verbatim}
+# equal-frequency class intervals -- spplot & projected
+plotvar <- orstations.shp@data$tann # gets data from shapefile .dbf
+nclr <- 8
+plotclr <- brewer.pal(nclr,"PuOr")
+plotclr <- plotclr[nclr:1] # reorder colours
+class <- classIntervals(plotvar, nclr, style="quantile")
+colcode <- findColours(class, plotclr)
+basemap <- list("sp.lines", orotl.shp, fill=NA)
+\end{verbatim}
+\end{framed}
+
+
+\end{document}

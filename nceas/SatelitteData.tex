@@ -1,0 +1,216 @@
+\documentclass{beamer}
+
+\usepackage{framed}
+\usepackage{graphics}
+
+\begin{document}
+
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\huge
+Overlay Points on Satellite Image / Extract Pixel Values
+
+\end{frame}
+\begin{frame}
+
+This example demonstrates the use of the R geospatial classes to assign remotely-sensed temperature measurements to georeferenced points, (e.g., study area point locations) on the Earth surface. Also demonstrated: methods for reading, creating, writing, displaying, and aligning the spatial projections of geospatial data files.
+\end{frame}
+%Download data and R Code for this example
+
+\begin{frame}
+Ecologists often employ large-scale environmental measurements (e.g., temperature, elevation, NDVI) from remote sensing satellites to supplement direct measurements within their study areas. In such cases, the scientist obtains the appropriate satellite image covering the study area, identifies geo-referenced features (e.g., with associated geographic coordinates) within the study area, and then assigns the spatially corresponding image pixel values to each of the features.
+
+For the pixel-to-point assignment to be correct, the point and image files must share the same spatial frame of reference; e.g., both files must share the same map projection. Many times, one or both of the input data sets will need to be converted to a new frame of reference in order to bring all study data sets into alignment.
+\end{frame}
+\begin{frame}[fragile]
+
+Until recently, this type of operation required Geographic Information System (GIS) software to accomplish. But with the advent of the R Language's spatial data classes and methods, ecologists need only to acquire their study data in an R-compatible file format, import the data into R, and perform the desired analysis.
+
+This example demonstrates the assignment of temperature measurements from a MODIS satellite image to a set of study area points located in the Hawaiian Islands.
+\end{frame}
+%Input Data / Format:
+%Point File: Study Area Locations: Hawaiian Islands
+%Satellite Image: MODIS 8-Day (Average) Land Surface Temperature Image, 500 meter resolution
+\begin{frame}[fragile]
+\frametitle{Workflow}
+1) Read input files into R Spatial data objects.
+
+2) Display the satellite image, creating custom gray/color scales for the image .
+
+3) If necessary, transform one or more of the input files into a new spatial frame of reference (i.e., map projection) to make it compatible with the other file.
+
+4) Perform Point Overlay operation: Assign to each point location the spatially corresponding satellite image pixel value.
+
+5) Write the point locations, along with assigned MODIS surface temperature values, to a new ESRI Shape File, as well as a separate Comma Separated Value file.
+\end{frame}
+%-----------------------------%
+\begin{frame}[fragile]
+\frametitle{Discussion:}
+To review and run this example:
+
+1) Download the Zip file archive, unpack into a folder.
+
+2) Be sure that your R (NOTE: use version 2.11 or later) environment includes sp and rgdal packages.
+
+3) Start R, set working directory to the folder containing the downloaded and unpacked example.
+
+4) At the R command prompt, enter 'source("./OverlayPointsOnRasters.r")'.
+
+5) Enter the command '\texttt{PointGridOverlay()}'.
+
+6) When graphic/map is displayed, press any key to complete script execution.
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{Results:}
+%Results:
+%PseudoColor Image Map
+%Point-In-Polygon Overlay: MODIS Image / pseudo-color image display
+% PseudoColor Image Map
+
+Temperature Assignment: MODIS Image Surface Temperatures to Point Locations
+\end{frame}
+ 
+
+
+
+\begin{frame}[fragile]
+\frametitle{R Script:}
+\begin{framed}
+\begin{verbatim}
+
+   require(rgdal) # rgdal packages depends on sp pagckage,
+                  # which is therefore automatically loaded.
+
+# Read point and raster files, in the same spatial frame of reference.
+
+   inPoints <- readOGR(".","SamplePointsGeogProj")
+\end{verbatim}
+\end{framed}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{R Script:}
+\begin{framed}
+\begin{verbatim}
+
+# Useful tip: Selecting 300 randomly selected points from input data set
+#   ss <- sample(c(1:length(inPoints@data[,1])),300) 
+#   pointSubset <- inPoints[ss,]
+
+   inGrid <- readGDAL("SatImageGeogProj.tif")
+\end{verbatim}
+\end{framed}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{R Script:}
+\begin{framed}
+\begin{verbatim}
+   
+# Want ocean to be black, land areas grey levels
+# Define a greyscale for displaying the image
+# Measure nonzero image range to get # grey levels;
+# breakpoints map image values to grey levels.
+   
+   nonZero <- (inGrid@data>0)
+   minMax <- range(inGrid@data[nonZero])  
+   nColors <- diff(minMax)
+   greyMap <- grey(0:nColors / nColors)
+   breakPts <- c(0,minMax[1]:minMax[2])
+\end{verbatim}
+\end{framed}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{R Script:}
+\begin{framed}
+\begin{verbatim}
+
+# display image with custom grey scale, 
+# with point set overlay
+
+   image(inGrid, col=greyMap, breaks=breakPts)
+   plot(inPoints,add=TRUE,pch=20,col="green")             
+
+# perform the point overlay
+
+   PointsWithTempsGP <- overlay(inGrid,inPoints)
+
+# Add a suitable name to the added data column
+
+   names(PointsWithTempsGP) <- "SurfTemp"
+\end{verbatim}
+\end{framed}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{R Script:}
+\begin{framed}
+\begin{verbatim}
+
+# write a new point shape file with the assignment as a NEW column attribute
+# note: we use writeOGR because it will write the projection attribute
+# into a .prj file. maptools/writeShapePoints() does not do so.
+
+   writeOGR(PointsWithTempsGP,".","PointsWithTempsGP",driver="ESRI Shapefile")
+
+# Create and write a simplified Comma Separated Value (CSV) file with longitude/latitude/temperature
+
+   tempPointsGP_CSV <- data.frame(cbind(coordinates(PointsWithTempsGP),PointsWithTempsGP$SurfTemp))
+   names(tempPointsGP_CSV) <- c("Longitude","Latitude","SurfT_C")
+   write.csv(tempPointsGP_CSV,"PointsWithTempsGP_CSV",row.names=FALSE)
+\end{verbatim}
+\end{framed}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{R Script:}
+\begin{framed}
+\begin{verbatim}
+
+# Finally, repeat the process with a satellite image whose
+# reference frame is the Albers Equal Area projection - reproject
+# the point file into the Albers projection before
+# performing the overlay operation.
+    
+   inGridAlbers   <- readGDAL("SatImageAlbersEqualArea.tif")   
+   projStringAlbers <- proj4string(inGridAlbers)
+   inPointsAlbers <- spTransform(inPoints, CRS=CRS(projStringAlbers))
+   pointsWithTempsAE <- overlay(inGridAlbers,inPointsAlbers)
+\end{verbatim}
+\end{framed}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{R Script:}
+\begin{framed}
+\begin{verbatim}
+
+# Display the Albers image as a 'pseudo-color' image:
+# create custom color map after removing NAs from image
+
+   NAs <- (is.na(inGridAlbers@data)) 
+   inGridAlbers@data[NAs] <- 0      
+   nonZero <- (inGridAlbers@data>0)
+   
+   minMax <- range(inGridAlbers@data[nonZero])  
+   nColors <- diff(minMax)
+   colorMap <- topo.colors(nColors+1)
+   breakPts <- c(0,minMax[1]:minMax[2])
+\end{verbatim}
+\end{framed}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{R Script:}
+\begin{framed}
+\begin{verbatim}
+   
+   message("Press any key to see color image...")  
+   browser() 
+   dev.new()
+   image(inGridAlbers, col=colorMap, breaks=breakPts)
+   plot(pointsWithTempsAE,add=TRUE,pch=20,col="red")                
+       
+   names(pointsWithTempsAE) <- "SurfTemp"    
+   writeOGR(pointsWithTempsAE,".","pointsWithTempsAE",driver="ESRI Shapefile")
+   message("Done. hit key to erase maps")  
+   browser()     
+   graphics.off() 
+\end{verbatim}
+\end{framed}
+\end{frame}
+\end{document}

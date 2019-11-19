@@ -1,0 +1,26 @@
+model
+{
+
+  for(i in 1:N)
+  {
+     observed[i] ~ dnorm(mu[i], prec)
+     mu[i]<-  alpha + beta1*cov1[i]+beta2*cov2[i]+u[i] + v[i] 
+
+     u[i] ~ dnorm(0, precu)
+  }
+
+  v[1:N] ~ car.normal(adj[], weights[], num[], precv)
+
+  alpha ~ dflat()
+  beta1 ~ dnorm(0, .001)
+  beta2 ~ dnorm(0, .001)
+  prec ~  dgamma(.001,.001)
+  precu ~ dgamma(0.001, 0.001)
+  precv ~ dgamma(0.1, 0.1)
+
+  sigma<-1/prec
+  sigmau<-1/precu
+  sigmav<-1/precv
+}
+
+

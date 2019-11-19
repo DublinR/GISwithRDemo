@@ -1,0 +1,274 @@
+
+\documentclass{beamer}
+
+\usepackage{framed}
+\usepackage{graphics}
+
+\begin{document}
+
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\huge
+Create Maps With R Geospatial Classes and Graphics Tool
+
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{Overview}
+\texttt{R} includes a rich set of plotting functions that can be applied to spatial data. We will demonstrate how to generate publication-quality maps using these functions, which in many cases can reduce the need to use dedicated GIS software. Here are the typical steps required to produce a map:
+\begin{itemize}
+\item Acquire and read the relevant data layers into R.
+\item  If necessary, transform the data layers into a common spatial reference system, e.g. using the spTransform function in the rgdal package to reproject vector data. For simplicity, the examples below use data that all share the same coordinate system.
+\item  If necessary, convert the R objects into whatever type is required by the desired plotting function. This is unlikely to be necessary unless using one of the \texttt{R} spatial packages that has not adopted the core spatial classes defined in sp, as illustrated by the PBSmapping plotting code below.
+\item  Plot the spatial data layers in the appropriate order and using desired sizing, color, etc. This often requires an iterative process of trial-and-error, but ultimately yields code that can saved and used to regenerate the same map or to create another map with different data inputs.
+\end{itemize}
+\end{frame}
+%------------------------------------%
+\begin{frame}
+\frametitle{Example 1: Thematic map with points, lines, and polygons}
+\begin{itemize}
+\item This example produces a simple thematic map showing the location of major dams in the western United States. 
+\item The data layers are available from the USGS as ESRI shapefiles, a commonly used file format for storing vector geospatial data.
+\item  The map includes point, line, and polygon data layers along with dam labels, a legend, and optional coordinates along the axes.
+\end{itemize}
+\end{frame}
+%------------------------------------%
+\begin{frame}
+\frametitle{Output maps and R code}
+\textbf{Using sp with base R graphics:}
+\begin{itemize}
+\item The sp package provides the basis for many other spatially oriented R packages, as it defines a set of classes that have become the de facto standard spatial data types in R. 
+\item However, sp also provides some user-level functionality in its own right, including spatial extensions to commonly used R base graphics functions such as plot, points, and lines. 
+\item This makes map production a fairly straightforward task for users who are familiar with conventional R graphics functions.
+\end{itemize}
+\end{framed}
+\end{frame}
+%Map of dams (sp)
+
+\begin{frame}[fragile]
+\begin{framed}
+\begin{verbatim}
+library(sp)
+library(maptools) # used here to read shapefiles
+ 
+# read in the spatial data
+# ...western US state outlines
+states <- readShapePoly("western-states")
+# ...major western US reservoirs
+reservoirs <- readShapePoly("western-reservoirs")
+# ...major western US rivers
+rivers <- readShapeLines("western-rivers")
+# ...locations of several western US dams
+dams <- readShapePoints("western-dams")
+\end{verbatim}
+\end{framed}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{framed}
+\begin{verbatim} 
+# start by plotting the states
+plot(states, border="wheat3", col="wheat1")
+# add the river lines
+lines(rivers, col="dodgerblue3")
+# add the reservoirs
+plot(reservoirs, col="darkgreen", border="darkgreen",
+    add=TRUE)
+# add dams (circled)
+points(dams, cex=1.4, col="darkred")
+# add dam labels (using trial and error for placement)
+text(dams, labels=as.character(dams$DAM_NAME), col="darkred",
+    cex=0.6, font=2, offset=0.5, adj=c(0,2))
+\end{verbatim}
+\end{framed}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\begin{framed}
+\begin{verbatim}
+ 
+# add a plot title and legend
+title("Major Dams of the Western United States")
+legend("bottomleft", legend=c("Major rivers", "Reservoirs", "Dams"),
+    title="Legend", bty="n", inset=0.05,
+    lty=c( 1,-1,-1), pch=c(-1,15, 1),
+    col=c("dodgerblue3", "darkgreen", "darkred"))
+\end{verbatim}
+\end{framed}
+\end{frame}
+
+\begin{frame}
+\frametitle{Using PBSmapping:}
+\begin{itemize}
+\item The \textbf{PBSmapping} package, developed by a team of fisheries scientists in Canada, which can also be used for generating maps. 
+\item However, note that \textbf{PBSmapping} uses its own custom-defined spatial data types that are optimized to work with various specialized package functions. 
+\item This makes it harder to take advantage of functions defined in the numerous packages that are built on \textbf{sp}, although as illustrated in the code used in this example, the maptools package does provide functions that convert between the different formats.
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Map of dams (PBSmapping)}
+\begin{framed}
+\begin{verbatim}
+
+library(PBSmapping)
+ 
+# !! this code assumes shapefiles have already been read
+# in via the code above !!
+ 
+# convert state polygons to a PolySet object
+ps.states <- SpatialPolygons2PolySet(states)
+# convert river lines to a PolySet object
+ps.rivers <- SpatialLines2PolySet(rivers)
+# convert points to an EventData object
+ed.dams <- as.EventData(data.frame(EID=1:length(dams@data[,1]),
+    X=dams@coords[,1], Y=dams@coords[,2]))
+\end{verbatim}
+\end{framed}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\begin{framed}
+\begin{verbatim} 
+# start by plotting the states
+plotPolys(ps.states, col="wheat1", border="wheat3", cex.lab=1.1)
+# add the river lines
+addLines(ps.rivers, col="dodgerblue3")
+# add the reservoirs
+plot(reservoirs, col="darkgreen", border="darkgreen", add=TRUE)
+# add dams (circled)
+addPoints(ed.dams, cex=1.4, col="darkred")
+# add dam labels (using trial and error for placement)
+text(dams, labels=as.character(dams$DAM_NAME), col="darkred",
+    cex=0.6, font=2, offset=0.5, adj=c(0,2))
+\end{verbatim}
+\end{framed}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\begin{framed}
+\begin{verbatim} 
+# add the map title and legend.
+title("Major Dams of the Western United States")
+legend("bottomleft", legend=c("Major rivers", "Reservoirs", "Dams"),
+    title="Legend", bty="n", inset=0.05,
+    lty=c( 1,-1,-1), pch=c(-1,15, 1),
+    col=c("dodgerblue3", "darkgreen", "darkred"))
+
+\end{verbatim}
+\end{framed}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Example 2: Raster base map with point and polygon overlays}
+The second sample map displays a satellite image of the Olympic Peninsula region of Washington state along with the outlines of the corresponding counties and the centroid point for each county. This example demonstrates how to construct a map consisting of multiple, spatially coinciding data layers, in which the base layer is a grid or raster image and the remaining layers are point, line, and/or polygon vector layers. As above, all of the data layers share the same map projection.
+\end{frame}
+
+\begin{frame}[fragile]
+Here are the three base layers:
+\begin{enumerate}
+\item Raster base (Raster Grid: Satellite Image)            
+\item Polygons base (Polygons: Counties )       
+\item Points base (Points: County Centroids)
+\end{enumerate}
+Forthcoming: Output maps and R code
+\end{frame}
+
+\begin{frame}
+\frametitle{Using sp with lattice graphics}
+The \textbf{sp} package extends plotting functionality of the lattice package as well as that of the base R graphics system as illustrated above. Although lattice functions tend to have more complicated syntax designed to handle the details of creating highly customizable multi-paneled figures (which is not relevant here), for plotting spatial data they also provide niceties such as easy insertion of scale bars and north arrows. In addition, the \texttt{spplot} function can accommodate raster data, although we'll see how the raster package lets us use the base plot function for this purpose too.
+\end{frame}
+%-------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Map of dams (sp)}
+
+\begin{framed}
+\begin{verbatim}
+library(sp)
+library(rgdal)
+library(maptools)
+ 
+# read in the counties and their centroids
+centroids <- readShapePoints("op-county-centroids")
+counties <- readShapePoly("op-counties")
+ 
+# read raster in as a SpatialGridDataFrame object
+psImg <- readGDAL("op-landsat.img")
+\end{verbatim}
+\end{framed}
+\end{frame}
+%----------------------------------------------% 
+\begin{frame}[fragile] 
+\begin{framed}
+\begin{verbatim} 
+# specify overplot layers for use by spplot; in order for polygons to be
+# plotted atop the raster, we need to convert them to SpatialLines
+polys <- list("sp.lines", as(counties, "SpatialLines"), col="white")
+points <- list("sp.points", centroids, col="lightblue", pch=1)
+labels <- list("panel.text",
+    coordinates(centroids)[,1], coordinates(centroids)[,2],
+    labels=sub(" County", "", centroids$COUNTY),
+    col="lightblue", font=2, pos=2)
+\end{verbatim}
+\end{framed}
+\end{frame}
+%----------------------------------------------% 
+\begin{frame}[fragile] 
+\begin{framed}
+\begin{verbatim} 
+# plot the raster with polygons, points, and labels
+spplot(psImg, "band1", col.regions=grey(0:256/256),
+    sp.layout=list(points, labels, polys), cuts=256,
+    colorkey=FALSE, scales=list(draw=TRUE),
+    main="Olympic Peninsula, WA",
+    legend=list(right=list(fun=mapLegendGrob(layout.north.arrow()))))
+\end{verbatim}
+\end{framed}
+\end{frame}
+%----------------------------------------------% 
+\begin{frame}[fragile] 
+\frametitle{Using sp and raster with base R graphics}
+Although the sp package can work with raster data, the newer raster package offers considerably more capabilities, including an extension of the base plot function for producing raster maps upon which other figure elements can be superimposed. Again, this makes map production a fairly straightforward task for users who are familiar with conventional R graphics functions. Also note that the code below produces the output map approximately 10 times faster than the code using spplot above.
+\end{frame}
+%----------------------------------------------% 
+\begin{frame}[fragile] 
+\frametitle{Map of dams (sp)}
+
+\begin{framed}
+\begin{verbatim} 
+library(raster)
+ 
+# read in the counties and their centroids
+centroids <- readShapePoints("op-county-centroids")
+counties <- readShapePoly("op-counties")
+ 
+# read raster in as a Raster object
+ps <- raster("op-landsat.img")
+\end{verbatim}
+\end{framed}
+\end{frame} 
+%----------------------------------------------% 
+\begin{frame}[fragile] 
+\frametitle{Map of dams (sp)}
+
+\begin{framed}
+\begin{verbatim} 
+# plot the raster, then polygons, points, and labels
+plot(ps, col=grey(0:256/256), legend=FALSE,
+    main="Olympic Peninsula, WA")
+par(bg="transparent")
+plot(counties, border="white", col="transparent", add=TRUE)
+points(centroids, col="lightblue")
+text(centroids, labels=sub(" County", "", centroids$COUNTY),
+    col="lightblue", font=2, pos=2)
+\end{verbatim}
+\end{framed}
+\end{frame}     
+
+\end{document}

@@ -1,0 +1,8 @@
+# OpenStreetMap and R
+# osmar.r-forge.r-project.org/
+
+# The osmar package provides infrastructure to access OpenStreetMap data from different sources, to 
+# work with the data in common R manner, and to convert data into available infrastructure provided 
+# by existing R packages (e.g., into and objects).
+
+# http://osmar.r-forge.r-project.org/RJpreprint.pdf

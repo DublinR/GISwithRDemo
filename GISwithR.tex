@@ -1,0 +1,490 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{framed}
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+\title{Geographic Information Systems with \texttt{R}}
+\author{Kevin O'Brien}
+
+%http://journal.r-project.org/archive/2011-1/RJournal_2011-1_South.pdf
+%http://cran.r-project.org/web/packages/gstat/vignettes/gstat.pdf
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+\section{Geographic Information Systems}
+
+%What is GIS?
+
+
+\section{Preliminaries}
+\begin{itemize}
+\item Working Directory
+\item Packages
+\end{itemize}
+
+The package \textbf{\textit{sp}} provides general purpose classes and methods for defining, importing/exporting and visualizing spatial data.
+\begin{framed}
+\begin{verbatim}
+setwd("~/UsingR-GIS")
+ 
+### Basic packages ###
+ 
+library(sp)             # classes for spatial data
+library(raster)         # grids, rasters
+library(rasterVis)      # raster visualisation
+library(maptools)
+			# and the dependencies
+ \end{verbatim}
+\end{framed}
+
+
+\subsection{The Ozone Example}
+% http://www.ats.ucla.edu/stat/r/faq/variogram.htm
+Let's look at an example. Our dataset, ozone, contains ozone measurements from thirty-two locations in the Los Angeles area aggregated over one month. The dataset includes the station number (Station), the latitude and longitude of the station (Lat and Lon), and the average of the highest eight hour daily averages (Av8top). 
+
+This data, and other spatial datasets, can be downloaded from the University of Illinois's Spatial Analysis Lab. By generating a variogram, we will be able to look at the variance of the differences of  Av8top among pairs of stations at different distances.  We can look at a sample of our data and then a summary of the distances between the stations.
+
+\begin{framed}
+\begin{verbatim}
+ozone<-read.table("http://www.ats.ucla.edu/stat/r/faq/ozone.csv", sep=",", header=T)
+head(ozone, n=10)
+\end{verbatim}
+\end{framed}
+\newpage
+\section{Visualisation}
+\begin{verbatim} 
+### VISUALISATION OF GEOGRAPHICAL DATA ###
+ 
+ 
+### RWORLDMAP ###
+ 
+library(rworldmap)   # visualising (global) spatial data
+ 
+  # examples:
+  newmap <- getMap(resolution="medium", projection="none")
+  plot(newmap)
+ 
+  mapCountryData()
+  mapCountryData(mapRegion="europe")
+  mapGriddedData()
+  mapGriddedData(mapRegion="europe")
+ 
+ 
+### GOOGLEVIS ###
+ 
+library(googleVis)    # visualise data in a web browser using Google
+Visualisation API
+ 
+  # demo(googleVis)   # run this demo to see all the possibilities
+ 
+  # Example: plot country-level data
+  data(Exports)
+  View(Exports)
+  Geo <- gvisGeoMap(Exports, locationvar="Country", numvar="Profit",
+                    options=list(height=400, dataMode='regions'))
+  plot(Geo)
+  print(Geo)
+  # this HTML code can be embedded in a web page (and be dynamically updated!)
+ 
+  # Example: Plotting point data onto a google map (internet)
+  data(Andrew)
+  M1 <- gvisMap(Andrew, "LatLong" , "Tip", options=list(showTip=TRUE,
+showLine=F, enableScrollWheel=TRUE,
+                           mapType='satellite', useMapTypeControl=TRUE,
+width=800,height=400))
+  plot(M1)
+\end{verbatim}
+ 
+%-----------------------------------------------------------%
+\newpage
+\subsection{GoogleMaps}
+
+\texttt{Rgooglemaps}
+
+\begin{verbatim} 
+### RGOOGLEMAPS ###
+ 
+library(RgoogleMaps)
+ 
+  # get maps from Google
+  newmap <- GetMap(center=c(36.7,-5.9), zoom =10, destfile = "newmap.png",
+maptype = "satellite")
+  # View file in your wd
+  # now using bounding box instead of center coordinates:
+  newmap2 <- GetMap.bbox(lonR=c(-5, -6), latR=c(36, 37), destfile =
+"newmap2.png", maptype="terrain")    # try different maptypes
+  newmap3 <- GetMap.bbox(lonR=c(-5, -6), latR=c(36, 37), destfile =
+"newmap3.png", maptype="satellite")
+ 
+  # and plot data onto these maps, e.g. these 3 points
+   PlotOnStaticMap(lat = c(36.3, 35.8, 36.4), lon = c(-5.5, -5.6, -5.8), zoom=
+10, cex=2, pch= 19, col="red", FUN = points, add=F)
+ 
+ \end{verbatim}
+\subsection{The \texttt{dismo} package}
+\begin{verbatim}
+### GMAP (DISMO) ###
+ 
+library(dismo)
+ 
+  # Some examples
+  # Getting maps for countries
+  mymap <- gmap("France")   # choose whatever country
+  plot(mymap)
+  mymap <- gmap("Spain", type="satellite")   # choose map type
+  plot(mymap)
+  mymap <- gmap("Spain", type="satellite", exp=3)  # choose the zoom level
+  plot(mymap)
+  mymap <- gmap("Spain", type="satellite", exp=8)
+  plot(mymap)
+ 
+  mymap <- gmap("Spain", type="satellite", filename="Spain.gmap")    # save the
+map as a file in your wd for future use
+ 
+  # Now get a map for a region drawn at hand
+  mymap <- gmap("Europe")
+  plot(mymap)
+  select.area <- drawExtent()   # now click on the map to select your region
+  mymap <- gmap(select.area)
+  plot(mymap)
+  # See ?gmap for many other possibilities
+ 
+\end{verbatim}
+\newpage
+
+
+\newpage
+\section{Interacting with other GIS}
+\begin{framed}
+\begin{verbatim}
+### INTERACTING AND COMMUNICATING WITH OTHER GIS ###
+ 
+library(spgrass6)   # GRASS
+library(RPyGeo)     # ArcGis (Python)
+library(RSAGA)      # SAGA
+library(spsextante) # Sextante
+\end{verbatim}
+\end{framed}
+
+\subsection{Other useful packages}
+\begin{verbatim}
+## Other useful packages ##
+ 
+library(Metadata)    # automatically collates data from online GIS datasets
+(land cover, pop density, etc) for a given set of coordinates
+ 
+#library(GeoXp)    # Interactive exploratory spatial data analysis
+  example(columbus)
+  histomap(columbus,"CRIME")
+ 
+library(maptools)
+# readGPS
+ 
+library(rangeMapper)    # plotting species distributions, richness and traits
+ 
+ 
+# Species Distribution Modelling
+library(dismo)
+library(BIOMOD)
+library(SDMTools)
+ 
+library(BioCalc)   # computes 19 bioclimatic variables from monthly climatic
+values (tmin, tmax, prec)
+ 
+ \end{verbatim}
+ 
+\newpage
+
+\section{Examples}
+\begin{verbatim}
+
+### Examples ###
+ 
+### SPATIAL VECTOR DATA (POINTS, POLYGONS, ETC) ###
+ 
+ 
+# Example dataset: Get "Laurus nobilis" coordinates from GBIF
+laurus <- gbif("Laurus", "nobilis")
+# get data frame with spatial coordinates (points)
+locs <- subset(laurus, select=c("country", "lat", "lon"))
+ 
+# Making it 'spatial'
+coordinates(locs) <- c("lon", "lat")    # set spatial coordinates
+plot(locs)
+ 
+# Define geographical projection
+# to look for the appropriate PROJ.4 description look here:
+http://www.spatialreference.org/
+ 
+crs.geo <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")    # geographical,
+datum WGS84
+proj4string(locs) <- crs.geo     # define projection system of our data
+summary(locs)
+ 
+ 
+# Simple plotting
+data(wrld_simpl)
+summary(wrld_simpl)     # Spatial Polygons Data Frame with country borderlines
+plot(locs, pch=20, col="steelblue")
+plot(wrld_simpl, add=T)
+ 
+ 
+### Subsetting
+table(locs@data$country)     # see localities by country
+ 
+locs.gr <- subset(locs, locs$country=="GR")   # select only locs in Greece
+plot(locs.gr, pch=20, cex=2, col="steelblue")
+plot(wrld_simpl, add=T)
+summary(locs.gr)
+ 
+locs.gb <- subset(locs, locs$country=="GB")    # locs in UK
+plot(locs.gb, pch=20, cex=2, col="steelblue")
+plot(wrld_simpl, add=T)
+\end{verbatim}
+\newpage
+\section{Making Maps}
+\begin{verbatim}
+### MAKING MAPS ###
+ 
+# Plotting onto a Google Map using RGoogleMaps
+PlotOnStaticMap(lat = locs.gb$lat, lon = locs.gb$lon, zoom= 10, cex=1.4, pch=
+19, col="red", FUN = points, add=F)
+ 
+ 
+# Downloading map from Google Maps and plotting onto it
+map.lim <- qbbox (locs.gb$lat, locs.gb$lon, TYPE="all")
+mymap <- GetMap.bbox(map.lim$lonR, map.lim$latR, destfile = "gmap.png",
+maptype="satellite")
+# see the file in the wd
+PlotOnStaticMap(mymap, lat = locs.gb$lat, lon = locs.gb$lon, zoom= NULL,
+cex=1.3, pch= 19, col="red", FUN = points, add=F)
+ 
+# using different background
+mymap <- GetMap.bbox(map.lim$lonR, map.lim$latR, destfile = "gmap.png",
+maptype="hybrid")
+PlotOnStaticMap(mymap, lat = locs.gb$lat, lon = locs.gb$lon, zoom= NULL,
+cex=1.3, pch= 19, col="red", FUN = points, add=F)
+ 
+# you could also use function gmap in "dismo"
+gbmap <- gmap(locs.gb, type="satellite")
+locs.gb.merc <- Mercator(locs.gb)    # Google Maps are in Mercator projection.
+This function projects the points to that projection to enable mapping
+plot(gbmap)
+points(locs.gb.merc, pch=20, col="red")
+ 
+ 
+### Plotting onto a Google Map using googleVis (internet)
+points.gb <- as.data.frame(locs.gb)
+points.gb$latlon <- paste(points.gb$lat, points.gb$lon, sep=":")
+map.gb <- gvisMap(points.gb, locationvar="latlon", tipvar="country",
+                  options = list(showTip=T, showLine=F, enableScrollWheel=TRUE,
+                           useMapTypeControl=T, width=1400,height=800))
+plot(map.gb)
+print(map.gb)    # HTML suitable for a web page
+ 
+##########
+ 
+ 
+# drawing polygons and polylines
+mypolygon <- drawPoly()    # click on the map to draw a polygon and press ESC
+when finished
+summary(mypolygon)    # now you have a spatial polygon!
+ 
+\end{verbatim}
+\section{READING AND SAVING DATA}
+\begin{framed}
+\begin{verbatim}
+  
+### READING AND SAVING DATA
+ 
+### Exporting KML
+writeOGR(locs.gb, dsn="locsgb.kml", layer="locs.gb", driver="KML")
+ 
+### Reading kml
+newmap <- readOGR("locsgb.kml", layer="locs.gb")
+ 
+### Saving as a Shapefile
+writePointsShape(locs.gb, "locsgb")
+ 
+### Reading (point) shapefiles
+gb.shape <- readShapePoints("locsgb.shp")
+plot(gb.shape)
+ 
+# readShapePoly   # polygon shapefiles
+# readShapeLines  # polylines
+# see also shapefile in "raster"
+ 
+ \end{verbatim}
+\end{framed}
+
+\newpage
+\begin{verbatim} 
+ 
+### PROJECTING ###
+ 
+summary(locs)
+# define new projection; look parameters at spatialreference.org
+crs.laea <- CRS("+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000
++ellps=GRS80 +units=m +no_defs")
+locs.laea <- spTransform(locs, crs.laea)
+plot(locs.laea)
+ 
+# Projecting shapefile of countries
+country <- readShapePoly("ne_110m_admin_0_countries", IDvar=NULL,
+proj4string=crs.geo)     # downloaded from Natural Earth website
+plot(country)    # in geographical projection
+country.laea <- spTransform(country, crs.laea)  # project
+ 
+# Plotting
+plot(locs.laea, pch=20, col="steelblue")
+plot(country.laea, add=T)
+# define spatial limits for plotting
+plot(locs.laea, pch=20, col="steelblue", xlim=c(1800000, 3900000),
+ylim=c(1000000, 3000000))
+plot(country.laea, add=T)
+ 
+#####################
+ 
+### Overlay
+ 
+ov <- overlay(locs.laea, country.laea)
+countr <- country.laea@data$NAME[ov]
+summary(countr)
+ 
+ \end{verbatim}
+ 
+\newpage
+
+\subsection{Spline Interpolation}
+\begin{verbatim} 
+
+### SPLINE INTERPOLATION
+xy <- data.frame(xyFromCell(tmin1.lowres, 1:ncell(tmin1.lowres)))    # get
+raster cell coordinates
+View(xy)
+vals <- getValues(tmin1.lowres)
+require(fields)
+spline <- Tps(xy, vals)    # thin plate spline
+intras <- interpolate(tmin1.c, spline)
+intras
+plot(intras)
+intras <- mask(intras, tmin1.c)
+plot(intras)
+ 
+ 
+# SETTING ALL RASTERS TO THE SAME EXTENT, PROJECTION AND RESOLUTION ALL IN ONE
+library(climstats)
+?spatial_sync_raster
+ 
+ \end{verbatim}
+
+\subsection{Elevations}
+\begin{verbatim} 
+### ELEVATIONS: Getting slope, aspect, etc
+elevation <- getData('alt', country='ESP')
+x <- terrain(elevation, opt=c('slope', 'aspect'), unit='degrees')
+plot(x)
+ 
+slope <- terrain(elevation, opt='slope')
+aspect <- terrain(elevation, opt='aspect')
+hill <- hillShade(slope, aspect, 40, 270)
+plot(hill, col=grey(0:100/100), legend=FALSE, main='Spain')
+plot(elevation, col=rainbow(25, alpha=0.35), add=TRUE)
+ 
+ 
+### SAVING AND EXPORTING DATA
+ 
+# writeraster
+writeRaster(tmin1.c, filename="tmin1.c.grd")   # can export to many different
+file types
+writeRaster(tmin.all.c, filename="tmin.all.grd")
+ 
+# exporting to KML (Google Earth)
+tmin1.c <- raster(tmin.all.c, 1)
+KML(tmin1.c, file="tmin1.kml")
+KML(tmin.all.c)     # can export multiple layers
+ \end{verbatim}
+ 
+\newpage
+\section{References}
+\begin{verbatim}
+### To learn more ###
+ 
+# Packages help and vignettes, especially
+http://cran.r-project.org/web/packages/raster/vignettes/Raster.pdf
+http://cran.r-project.org/web/packages/dismo/vignettes/sdm.pdf
+http://cran.r-project.org/web/packages/sp/vignettes/sp.pdf
+ 
+# CRAN Task View: Analysis of Spatial Data
+http://cran.r-project.org/web/views/Spatial.html
+ 
+# R-SIG-Geo mailing list
+https://stat.ethz.ch/mailman/listinfo/R-SIG-Geo
+ 
+# R wiki: tips for spatial data
+http://rwiki.sciviews.org/doku.php?id=tips:spatial-data&s=spatial
+ 
+# book
+http://www.asdar-book.org/
+ 
+############################################################################
+
+Created by Pretty R at inside-R.org
+
+
+\end{verbatim}
+
+\end{document}

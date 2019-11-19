@@ -1,0 +1,558 @@
+\documentclass{beamer}
+
+\usepackage{framed}
+\usepackage{graphics}
+
+\begin{document}
+
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\huge
+Display R Spatial Objects With Google Maps/Google Earth
+
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+%GOOD
+\begin{itemize}
+\item This demonstration creates Google Maps and Google Earth-compatible Keyhole Markup Language (KML) files from \texttt{R} Spatial objects containing data from vector ESRI Shape Files and raster GeoTiff files. 
+
+\item Three techniques will be used for writing \texttt{R} Spatial objects into KML files, and one technique for reading KML files into \texttt{R} Spatial objects. 
+(Also revealed: reading polygon KML files into \texttt{R} Spatial objects).
+
+\item This case also introduces the functionality of the recently released \textbf{RGoogleMaps} package. We demonstrate use of this package to download a static GoogleMaps map image and use it as the background for \texttt{R} spatial object plots. 
+\end{itemize}
+%Click here to step directly to this section of the Use Case.
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+\textbf{Project Requirements:}\\
+Within \texttt{R}, read vector ESRI Shape Files and a raster GeoTIFF file into \texttt{R} Spatial 
+objects, then create \textit{Keyhole Markup Language (KML)} files for display in GoogleMaps / Google Earth.
+
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+%GOOD
+\frametitle{GoogleMaps}
+To add \texttt{R} Spatial objects to GoogleMaps / GoogleEarth sessions:
+\begin{itemize}
+\item  Read each ESRI Shape File into \texttt{R} Spatial objects, then translate and write them into KML files.
+\item  Within GoogleMaps create/select a background map containing the objects in each file. Then, import the KML file into the map. OR,
+\item  Within GoogleEarth, simply open the KML file; GoogleEarth will read the KML file's spatial metadata and overlay the features on top of a satellite image of the underlying location.
+\end{itemize}
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+\textbf{Creating KML files for R Spatial objects: Three techniques}
+\begin{enumerate}
+\item \texttt{kmlLine()}or \texttt{kmlPolygon(})functions, included in maptools package, to convert line and polygon objects to SEPARATE kml files.
+
+\item \texttt{writeOGR()} function, included in the rgdal package. This is the most convenient and straightforward method.
+
+The R \texttt{system()} command invokes the \texttt{ogr2ogr()} method,  provided by the open-source \textbf{FWTools}  package, to create KML files from Shape Files (Note: requires installation of FWTools library on host computer).
+\end{enumerate}
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+\textbf{Technique 1:} maptools package methods: \texttt{kmlLine()}, kmlPolygon(), and \texttt{kmlOverlay()}.
+\\
+\bigskip
+This method uses \texttt{R} maptools package functions; currently, maptools has no methods that convert Point objects to KML format. 
+Instead, use writeOGR, used here and in Technique 2, to write Point objects to a KML file..
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+%
+\begin{itemize}
+\item To most accurately align \texttt{R} Spatial object features with corresponding Google Maps/Google Earth features, the \texttt{R} objects should be transformed into the map projection used by Google. \item Google Earth uses a Cylindrical Latitude/Longitude projection; Google Maps uses a variation of the Spherical Mercator projection. \item These projections are represented by EPSG and Proj.4 codes used by \texttt{R} spatial coordinate transformation methods. \item The Technique 1 script for this case gives the codes for both projections used by Google, and transforms the Spatial objects into the Google Earth-compatible coordinate system.
+\end{itemize} 
+
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+First, create the \texttt{R} Spatial objects used in all three examples:\\
+
+Generate KML files using three methods: 
+\begin{itemize}
+\item Method 1: \texttt{KmlPolygon(}) / \texttt{KmlLine()} functions in \textbf{Maptools} package
+\item Method 2: \texttt{ReadOGR()} / \texttt{WriteOGR()} functions from \textbf{rgdal} package
+\item Method 3: ogr2ogr utility from FWTools package, executed using the R \texttt{system()} function                     
+\end{itemize}
+%\item Bonus Method: Reading a KML file into an R Spatial object
+Remarks:
+\begin{itemize} 
+\item \textbf{rgdal }provides readOGR() and writeOGR()
+\item \textbf{maptools/sp} provides transformation and kml translators
+\item \textbf{PBSmapping} provides polygon centroid creation function
+\end{itemize}
+
+
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+\begin{framed}
+\begin{verbatim}
+  library(rgdal)  # loads 'dependant' sp package
+  library(maptools)
+\end{verbatim}
+\end{framed}
+Remark: Remember to set the current working directory to the folder into which you unpacked this archive.
+% etwd("C:/Projects/GeospatialUseCasesMar2009/CreateKMLFiles/dl") #example
+
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+
+
+\begin{itemize}
+\item Re-project the counties into Geographic (unprojected) space.
+\item Then, write the new polygons to a NEW shape file.
+\item Read a polygon shape file, which is in a Albers Equal Area map transformation
+\end{itemize} 
+\begin{verbatim}
+NwCountiesAE <- readOGR("FiveNWStatesCounties.shp","FiveNWStatesCounties")  
+\end{verbatim}
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+Reference: For GoogleMaps overlays, project data into EPSG:3857 (Spherical Mercator projection).
+Here we will project all Shape Files for GoogleEarth overlay   
+\begin{framed}
+\begin{verbatim}
+  epsg3857String <- CRS("+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +
+   b=6378137 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs") 
+\end{verbatim}
+\end{framed}   
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+For GoogleEarth overlays, reproject data into \textbf{EPSG:4326} (simple Latitude/Longitude 'geographic' projection)
+\begin{framed}
+\begin{verbatim}
+  epsg4326String <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+  NwCountiesGMap <- spTransform(NwCountiesAE,epsg4326String)
+  writeOGR(NwCountiesGMap,".","NwCountiesGMap",driver="ESRI Shapefile")  
+\end{verbatim}
+\end{framed}
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+Re-read the (reprojected) Shape File with \texttt{readOGR} to verify the projection information
+\begin{framed}
+\begin{verbatim}
+  NwCountiesGMap <- readOGR("NwCountiesGMap.shp","NwCountiesGMap")
+\end{verbatim}
+\end{framed}
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+Read a point shape file containing centroids for all Northwest counties 
+
+\begin{framed}
+\begin{verbatim}
+  MapPolysCent <- readOGR("NwCountiesCentroids.shp","NwCountiesCentroids")
+\end{verbatim}
+\end{framed}
+\begin{itemize}
+\item Only pass the Polygons component of the SPDF to \texttt{kmlPolygon},and then extract it.
+\item Create the KML with only Idaho counties (Idaho County FIPS code: 53)
+\item Extract the Polygons component of the \texttt{SpatialPointsDataFrame},as needed by the \texttt{kmlToPolygon()} function.
+\end{itemize}
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+# Note: May 2010 - kmlPolygon only writes the first spatial feature
+# (with Polygon ID 0) from a Spatial...DataFrame. To capture all of 
+# the spatial features in this file, need to 'drill down' to the 'polygons' layer) 
+\begin{verbatim}
+#  CountyPolys <- slot(NwCountiesGP[NwCountiesGP$STATEFIPS %in% c("53"),], "polygons")[[1]]  
+#  kmlPolygon(CountyPolys, kmlfile="NWStateCountyPolys.kml", name="NWStateCountyPolys",
+# col="blue", lwd=1,
+#             border=1, kmlname="R Test",kmldescription="KML File:NW USA State Counties")
+\end{verbatim}
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\begin{framed}
+\begin{verbatim}
+   sw  <- NwCountiesGMap[NwCountiesGMap$STATEFIPS %in% c("53"),] # extract desired SPDF subset 
+   out <- sapply(slot(sw, "polygons"), function(x) {
+                 kmlPolygon(x,
+                            name=as(sw, "data.frame")[slot(x, "ID"), "STATEFIPS"],     
+                            col="red", lwd=1.5, border='black', 
+                             description=paste("ISO3:", slot(x, "ID")))
+                                                   }
+                 )  # outside of 'sapply' function call
+   tf <- "MyNewKMLFILE.kml" 
+   kmlFile <- file(tf, "w")
+\end{verbatim}   
+\end{framed}
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+\begin{framed}
+\begin{verbatim}
+cat(kmlPolygon(kmlname="R Test", 
+      kmldescription="Hello")$header,file=kmlFile, sep="\n")
+cat(unlist(out["style",]), file=kmlFile, sep="\n")
+cat(unlist(out["content",]), file=kmlFile, sep="\n")
+cat(kmlPolygon()$footer, file=kmlFile, sep="\n")
+close(kmlFile)
+\end{verbatim}
+\end{framed}
+Alternate method: use the GDAL tools \textttbf{writeOGR()} to convert and write the shapefile in KML format.  
+\begin{framed}
+\begin{verbatim}
+   writeOGR(NwCountiesGMap, "NWStateCountyPolysOGR.kml",
+      "NWStateCountyPolysOGR", driver="KML")  
+\end{verbatim}
+\end{framed}
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+Next,  generate KML files for POINT and LINE shape files.
+
+Creating a KML file for the POINT shape file we read: The only way within \texttt{R} is to use GDAL / OGR utilities  
+
+\begin{framed}
+\begin{verbatim}
+MapPolysCentGMap <- spTransform(MapPolysCent,epsg4326String)
+writeOGR(MapPolysCentGMap,".","NwCountyCentGMap",driver="ESRI Shapefile")     
+writeOGR(MapPolysCentGMap, "NwCountyCentroids.kml", "NwCountyCentroids.kml", driver="KML")   
+\end{verbatim}
+\end{framed}
+Next, create a KML file for a set of LINES (streams) 
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+\begin{framed}
+\begin{verbatim}
+NevadaStreamsGP <- readOGR("NevadaStreamsGP.shp","NevadaStreamsGP") 
+\end{verbatim}
+\end{framed}
+Same issue: only first feature (with Polygon ID 0) is written, so use GDAL OGR methods
+
+\begin{framed}
+\begin{verbatim}
+NevadaStreamsGMap <- spTransform(NevadaStreamsGP,epsg4326String)
+out <- sapply(slot(NevadaStreamsGMap, "lines"), function(x) {
+                kmlLine(x,
+                   name=as(sw, "data.frame")[slot(x, "ID"), "GNIS_NAMEhiso"],     
+                   col="green", lwd=1, 
+                   description=paste("ISO3:", slot(x, "ID")))
+                                                             }
+                    )  # outside of 'sapply' function call
+tf <- "MyNewKMLLineFile.kml" ##tempfile()
+kmlFile <- file(tf, "w")
+\end{verbatim}
+\end{framed}
+
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+\begin{framed}
+\begin{verbatim}
+   cat(kmlLine(kmlname="R Test", kmldescription="Hello")$header,file=kmlFile, sep="\n")
+   cat(unlist(out["style",]), file=kmlFile, sep="\n")
+   cat(unlist(out["content",]), file=kmlFile, sep="\n")
+   cat(kmlLine()$footer, file=kmlFile, sep="\n")
+   close(kmlFile)
+\end{verbatim}
+\end{framed}
+Alternatively call to GDAL/writeOGR 
+\begin{framed}
+\begin{verbatim}
+ writeOGR(NevadaStreamsGMap, "NevadaDesertStreams.kml", 
+    "NevadaDesertStreams", driver="KML")                         
+\end{verbatim}
+\end{framed}
+% Click here to see the vector (counties and centroids) shape files displayed in GoogleEarth
+
+
+\end{frame}
+%\end{document}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+Overlay a raster image on a Google Earth background: \texttt{kmlOverlay()}
+
+\begin{itemize}
+\item To overlay a raster image (e.g., satellite image or simulation model result) on a Google Maps or Google Earth display, use maptools: \texttt{kmlOverlay(}) to prepare the file.
+
+\item  \texttt{kmlOverlay()} reads a byte/integer PNG (Portable Network Graphics) format raster image, and creates the KML 'wrapper' file containing spatial metadata used by Google Earth.
+\item  
+To display the KML-wrapped image in Google Earth: Install Google Earth exectutable on your computer, then double-click the image's KML 'wrapper' file.
+\end{itemize}
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+To display the KML-wrapped image in Google Maps: The image and wrapper files must be Web-accessible:
+
+Start Google Maps: Go to http://maps.google.com
+Within Google Maps, paste KML wrapper file's Web address into the 'Search Maps' box.
+For example, try this link:
+
+http://www.nceas.ucsb.edu/files/scicomp/Dloads/ExamplePrograms/NevadaDEMImageOverlay.kml
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+# Use kmlOverlay() to create a KML 'wrapper' for a Digital Elevation Map (DEM) raster image file
+# 
+# Convert a floating-point DEM elevation map image 
+# into a KML file complex for display with GoogleEarth.
+# Begin with Digital Elevation Map Iamage, floating point elevation values, .IMG format.
+# Note: The input DEM image is a .tif file, with elevations in floating point format.
+# Steps: 1) Convert image to a TIFF format integer raster with pixre values > 0 < 256
+#        2) Convert the TIFF file to PNG image format.
+#        3) Create a GoogleEarth-compatible Spatial Grid object from the PNG image.
+#        4) Use maptools/KmlOverlay() to create the KML file 'complex' for GoogleEarth display.
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+   DEMImg <- readGDAL("NevadaSiteDemGP.img") 
+   rng =range(DEMImg$band1)
+
+# Translate floating point to integer-byte
+
+   DEMImg$band1 <- as.integer((DEMImg$band1 / rng[2]) * 256)
+   writeGDAL(DEMImg,"DemByteImg.tif",type="Byte",driver="GTiff") # normalized DEM data
+
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+# Create a PNG version of our byte /Tif image
+# writeGDAL can not create a PNG, so we use 
+# GDAL library routines to ceate, and then save
+# as a .png image, a temporary dataset.
+
+   DemTif <- GDAL.open("DemByteImg.tif")
+   xx <- copyDataset(DemTif,driver="PNG") 
+   saveDataset(xx,"NevadaDEMImg.png")     
+   DemPng <- readGDAL("NevadaDEMImg.png")  # na proper 'integer' PNG file
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+ # Preprocessing step: create a special SpatialGrid object
+ # for display in GoogleEarth
+
+   DemPngGK <- GE_SpatialGrid(DemPng)
+
+# Generate the KML 'wrapper' for the png file.
+# 'GE-compatible' PNG file is now a complex of three files:
+# .png, .kml, and .png.aux.xml files.
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+   kmlOverlay(DemPngGK,"NevadaDEMImageOverlay.kml","NevadaDEMImg.png",name="First R Dem Kml")  
+
+Click here to see the raster (terrain) image and vector (streams) shape files displayed in GoogleEarth.
+
+Technique 2: Use rgdal package writeOGR() function:
+A versatile method for converting ESRI Shape Files to KML files uses the R rgdal package writeOGR() method.
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+writeOGR() inputs are: the root name of an ESRI Shapefile, the name of the KML file to be generated, and the name of the file conversion driver (for conversion to KML, this will always be set to "KML") to be used.
+
+writeOGR() automatically detects the shape file type (point/line/polygon) and generates the appropriate KML file, ready for use with Google Maps and/or Google Earth.
+
+Note: writeOGR() works only with shape files that 1) are in geographic coordinate space with x (longitude) and y (latitude) values.
+
+*** Note: Shape Files containing the z (altitude) component will not be processed. ***
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+        
+# Demonstrate conversion of point and polygon shape files into KML format using writeOGR()
+# load the appropriate R package libraries
+# Read polygon and point shape files using the same method
+
+   NwCountiesGMap = readOGR("NwCountiesGMap.shp","NwCountiesGMap")
+   NwCentroidsGMap = readOGR("NwCountyCentGMap.shp","NwCountyCentGMap")
+
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+
+# Create KML files for the point, line, and polygon data objects. Just by specifying the KML file driver.
+
+  writeOGR(NwCountiesGMap, "NwCountiesGMap.kml", "NwCountiesGMap", driver="KML")  
+  writeOGR(NevadaStreamsGMap, "NevadaStreamsGMap.kml", "NevadaStreamsGMap", driver="KML")
+  writeOGR(MyCentroidsGMap, "MyCentroidsGMap.kml", "MyCentroidsGMap", driver="KML")   
+
+# End of example.
+
+Technique 3: Use R system() function to call FWTools toolkit ogr2ogr utility
+FWTools is an Open Source GIS utility package providing many useful geospatial utilities.
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+Within FWTools, the Geospatial Data Abstraction Library (GDAL) includes file conversion and manipulation tools, including the ogr2ogr utility, demonstrated here.
+
+This example demonstrates the R interface to the substantial body of geospatial software tools not (yet) included in the R Geospatial tools.
+
+# Use the ogr2ogr function from the fwtools package to translate 
+# the 'Northwest Washington Counties' polygon shape file into a KML file.
+# For this example to work, the host computer must have: 
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+ 
+# 1) The fwtools file conversion utilitues installed. 
+#    Download the package at:   http://fwtools.maptools.org/
+
+# 2) Add the path to the fwtools ./bin folder to your system 'path' environment variable.
+#    (on my system, this path is: 'C:/Program Files (x86)/FWTools2.4.7/bin')
+
+   sOgr2OgrArgs <-sprintf("-dsco NameField=%s","OurTestKMLRegion")
+   sCommandString <-sprintf(" -f KML %s %s %s","NwCountiesGeogProjOgr2ogr.kml","NwCountiesGMap.shp",sOgr2OgrArgs)
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+# Execute the operating system command
+# on computers that do not (yet) host the FWTools package, uncomment the line AFTER installing FWTools.
+# Note: This line is commented out to avoid error message ('FWtools not found')   
+#   system(paste('"C:/Program Files (x86)/FWTools2.4.7/bin/ogr2ogr"',sCommandString)) 
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+Reading KML files into R Spatial objects:
+To use this technique, install the Expat XML parsing library on your computer. Be sure that the library is visible to the R and GDAL executable files via the PATH environment variable, and that your R script includes the 'require(rgdal)' statement. 
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+Use the ogrInfo() command to verify existence of KML driver; use the readOGR() command to read the KML file (Using the KML driver and Expat XML library) into the appropriate R spatial object. The readOGR() command 'autodetects' the file type using the '.kml. suffix, and loads the appropriate software driver to input the file into the appropriate R Spatial object.
+
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+# READING a KML file into R: check for presence of OGR KML driver, then read the file
+
+ogrInfo("NWStateCountyPolysOGR.kml",layer="NWStateCountyPolysOGR")
+polysFromKML=readOGR("NWStateCountyPolysOGR.kml",layer="NWStateCountyPolysOGR") class(polysFromKML)
+plot(polysFromKML) 
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+Using RGoogleMaps package to get map images for plot backgrounds:
+The RGoogleMaps package is an interface between any R script and the Google Map server. It equips the R program to download static (i.e., non-scrolling) map images from Google Maps, using spatial coordinates and other parameters, and use the images as R plot backgrounds. The following script extracts two Google Maps for our study area, then uses them as background images for polygon/point plots:
+
+% Click here to see the first map; click here to see the second map.
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+
+
+# Demonstrates use of RgoogleMaps package to grab GoogleMaps map/image
+# for user-specified geographic rectangle.
+
+   require(RgoogleMaps)
+   require(rgdal)      # required if the 'png' image file format is to be used....
+   require(PBSmapping) # for PolySet type, to  pass shape files to  PlotPolysOnStaticMap()
+   require(ReadImages) # includes read.jpeg(), used by GetMap to write JPEG-format output image
+%-----------------------------------------------------------------%
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+# Using PBSmapping routine, read polygon Shape File to overlay on the Google image
+
+   polyShpFile="./FiveNWStatesCounties.shp"
+   shpPolySet=importShapefile(polyShpFile,projection="LL");
+   pointShpFile="./MyCountyCentroidsGP.shp"
+   shpPointSet=importShapefile(pointShpFile,projection="LL");
+
+# Specify study area (Northwest USA) lower left-hand and upper right-hand corner coords.
+
+   lats = c(40.9,49.0)
+   lons = c(-125.0, -104.0)
+   centerPt = c(mean(lats),mean(lons))
+   boundBox = qbbox(lat = lats,lon = lons)
+
+   mapFromBbox = GetMap.bbox(boundBox$lonR,boundBox$latR,maptype="terrain",destfile="MapFromBbox.png")
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+   
+# Display the GoogleMaps 'base map', then overlay polygons (outlines ONLY, 'col=0') on map
+   
+   PlotPolysOnStaticMap(mapFromBbox, shpPolySet, lwd=1.5, col=0, add = F)
+
+# Compute the maximum (most detailed) zoom level that will contain study area.
+# Use this with the computed 'center point' of the user points to extract the
+# desired map using GetMap() function.
+
+   zoomFact = min(MaxZoom(range(lats),range(lons)))
+   
+   mapFromCenPt = GetMap(center=centerPt,zoom=zoomFact,maptype="roadmap",destfile="MapFromCentPt.jpg")
+\end{frame}
+%----------------------------------------------------%
+\begin{frame}[fragile]
+\frametitle{GoogleMaps}
+
+# Overlay the point set on top of the second, "roadmap" base map.
+# Then, add the polygons (only) displayed on the original map.
+
+   PlotOnStaticMap(mapFromCenterPt, shpPointSet$Y,shpPointSet$X, col="red",pch='*', add = F)
+   PlotPolysOnStaticMap(mapFromCenterPt, shpPolySet, lwd=1.5, col=0, add = T)
+
+# August 2010: For this version of RgoogleMaps, here is the method for writing the new map to a file
+# (until the destfile=fn argument is implemented).
+   
+   png("./MapFromBbox.png", 640, 640);
+   PlotOnStaticMap(mapFromCenterPt, shpPointSet$Y,shpPointSet$X, col="red",pch='*', add = F)
+   PlotPolysOnStaticMap(mapFromCenterPt,shpPolySet, lwd=1.5, col=rgb(0,0,0,0), add = T)
+   dev.off() # end of example
+\end{frame}
+%----------------------------------------------------%
+
+\end{document}

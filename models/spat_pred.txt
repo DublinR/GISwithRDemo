@@ -1,0 +1,32 @@
+model { 
+
+   observed[1:Nfit] ~ spatial.exp(mu[], xx[], yy[], tau, phi, kappa)
+
+ for(i in 1:Nfit) { 
+
+ mu[i] <- alpha+beta1*cov1[i]+beta2*cov2[i]
+
+ } 
+
+ alpha ~ dflat() 
+ beta1 ~ dnorm(0, .001)
+ beta2 ~ dnorm(0, .001)
+
+ tau ~ dgamma(0.001, 0.001) 
+
+ sigma2 <- 1/tau 
+
+ phi ~ dunif(0.05, 20) 
+
+ kappa ~ dunif(0.05,1.95) 
+
+ for(j in 1:Npred) { 
+
+   mupred[j]<-alpha+beta1*covpred1[j]+beta2*covpred2[j]
+ pred[j] ~ spatial.unipred(mupred[j], x.pred[j], y.pred[j], observed[])
+
+
+ } 
+
+
+}

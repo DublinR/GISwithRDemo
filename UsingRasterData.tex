@@ -1,0 +1,134 @@
+\section{Using Raster Data} 
+\begin{verbatim}
+ 
+### USING RASTER (GRID) DATA ####
+ 
+ 
+### DOWNLOADING DATA
+tmin <- getData("worldclim", var="tmin", res=10)   # this will download global
+data on minimum temperature at 10 min resolution
+  # can also get other climatic data, elevation, administrative boundaries, etc
+ 
+### LOADING A RASTER LAYER
+tmin1 <- raster("~/UsingR-GIS/wc10/tmin1.bil")   # Tmin for January
+fromDisk(tmin1)  # values are stored on disk instead of memory! (useful for
+large rasters)
+tmin1 <- tmin1/10    # Worldclim temperature data come in decimal degrees
+tmin1    # look at the info
+plot(tmin1)
+ 
+?raster    # raster reads many different formats, including Arc ASCII grids or
+netcdf files
+ 
+ 
+ 
+### CREATING A RASTER STACK (collection of many raster layers with the same
+projection, spatial extent and resolution)
+library(gtools)
+list.ras <- mixedsort(list.files("~/UsingR-GIS/wc10/", full.names=T,
+pattern=".bil"))
+list.ras   # I have just collected a list of the files containing monthly
+temperature values
+tmin.all <- stack(list.ras)
+tmin.all
+tmin.all <- tmin.all/10
+plot(tmin.all)
+ 
+# BRICKS
+tmin.brick <- brick(tmin.all)   # a rasterbrick is similar to a raster stack
+(i.e. multiple layers with the same extent and resolution), but all the data
+must be stored in a single file
+ 
+ 
+ 
+### CROP RASTERS
+plot(tmin1)
+newext <- drawExtent()    # click on the map
+tmin1.c <- crop(tmin1, newext)
+plot(tmin1.c)
+ 
+newext2 <- c(-10, 10, 30, 50)   # alternatively, provide limits
+tmin1.c2 <- crop(tmin1, newext2)
+plot(tmin1.c2)
+ 
+tmin.all.c <- crop(tmin.all, newext)
+plot(tmin.all.c)
+ 
+\end{verbatim}
+
+\subsection{Projections}
+\begin{verbatim} 
+ 
+### DEFINE PROJECTION
+crs.geo    # defined above
+projection(tmin1.c) <- crs.geo
+projection(tmin.all.c) <- crs.geo
+tmin1.c    # notice info info at coord.ref.
+ 
+### CHANGING PROJECTION
+tmin1.proj <- projectRaster(tmin1.c, crs="+proj=merc +lon_0=0 +k=1 +x_0=0
++y_0=0 +a=6378137 +b=6378137 +units=m +no_defs")
+tmin1.proj   # notice info info at coord.ref.
+plot(tmin1.proj)
+# can also use a template raster, see ?projectRaster
+ 
+ 
+ 
+### PLOTTING
+histogram(tmin1.c)
+pairs(tmin.all.c)
+persp(tmin1.c)
+contour(tmin1.c)
+contourplot(tmin1.c)
+levelplot(tmin1.c)
+plot3D(tmin1.c)
+bwplot(tmin.all.c)
+densityplot(tmin1.c)
+ 
+ 
+ 
+### Spatial autocorrelation
+Moran(tmin1.c)    # global Moran's I
+tmin1.Moran <- MoranLocal(tmin1.c)
+plot(tmin1.Moran)
+ 
+ 
+### EXTRACT VALUES FROM RASTER
+View(locs)    # we'll obtain tmin values for our points
+locs$tmin1 <- extract(tmin1, locs)    # values are incorporated to the
+dataframe
+View(locs)
+ 
+# extract values for a given region
+plot(tmin1.c)
+reg.clim <- extract(tmin1.c, drawExtent())
+summary(reg.clim)
+ 
+# rasterToPoints
+tminvals <- rasterToPoints(tmin1.c)
+View(tminvals)
+ 
+## CLICK: get values from particular locations in the map
+plot(tmin1.c)
+click(tmin1.c, n=3)   # click n times in the map
+ 
+ 
+ 
+### RASTERIZE POINTS, LINES OR POLYGONS
+locs2ras <- rasterize(locs.gb, tmin1)
+locs2ras
+plot(locs2ras, xlim=c(-10,10), ylim=c(45, 60), legend=F)
+plot(wrld_simpl, add=T)
+ 
+ 
+### CHANGING RESOLUTION (aggregate)
+tmin1.lowres <- aggregate(tmin1.c, fact=2, fun=mean)
+tmin1.lowres
+tmin1.c     # compare
+par(mfcol=c(1,2))
+plot(tmin1.c, main="original")
+plot(tmin1.lowres, main="low resolution")
+dev.off()
+ 
+ 
+  \end{verbatim}

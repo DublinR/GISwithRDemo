@@ -1,0 +1,103 @@
+\documentclass[a4paper,12pt]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{eurosym}
+\usepackage{vmargin}
+\usepackage{amsmath}
+\usepackage{graphics}
+\usepackage{epsfig}
+\usepackage{subfigure}
+\usepackage{fancyhdr}
+%\usepackage{listings}
+\usepackage{framed}
+\usepackage{graphicx}
+
+\setcounter{MaxMatrixCols}{10}
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.00.0.2570}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{LastRevised=Wednesday, February 23, 2011 13:24:34}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{Language=American English}
+
+\pagestyle{fancy}
+\setmarginsrb{20mm}{0mm}{20mm}{25mm}{12mm}{11mm}{0mm}{11mm}
+\lhead{Dublin \texttt{R}} \rhead{May 2013}
+\chead{Spatial Data Analysis with \texttt{R}}
+%\input{tcilatex}
+
+
+% http://spatialanalysis.co.uk/2013/04/analysis-visualisation-spatial-data/
+\begin{document}
+
+\tableofcontents
+\newpage
+\section*{Revolution Analytics}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.7\linewidth]{./RevolutionAnalytics}
+\hspace{8\baselineskip} {\Large Sponsors of Dublin \texttt{R}}
+%\label{fig:RevolutionAnalytics}
+\end{figure}
+
+
+
+
+\subsection*{About Revolution Analytics}
+Revolution Analytics is a statistical software company focused on developing "open-core" versions of the free and open source software R for enterprise, academic and analytics customers. 
+\\
+\\
+\noindent Revolution Analytics was founded in 2007 as REvolution Computing providing support and services for R in a model similar to Red Hat's approach with Linux in the 1990s as well as bolt-on additions for parallel processing. 
+\\
+\\
+\noindent Their core product, Revolution R, would be offered free to academic users and their commercial software would focus on big data, large scale multiprocessor (or "high performance") computing, and multi-core functionality.
+\newpage
+%---------------------------------------------------- %
+\section{Contour Plots}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{./Contour1}
+\caption{}
+\label{fig:Contour1}
+\end{figure}
+
+\newpage
+\section{Data Types}
+The different types
+of data models that we distinguish here include the following:
+\begin{description}
+\item[Point], a single point location, such as a GPS reading or a geocoded address
+\item[Line], a set of ordered points, connected by straight line segments
+\item[Polygon], an area, marked by one or more enclosing lines, possibly containing
+holes
+\item[Grid], a collection of points or rectangular cells, organised in a regular lattice
+\end{description}
+%--------------------------------------------------- %
+\section{GIS and Spatial Data}
+The \texttt{sp} package provides classes and methods for points, lines, polygons, and grids . 
+
+Adopting a single set of classes for spatial data
+offers a number of important advantages:
+\begin{itemize}
+\item[(i)] It is much easier to move data across spatial statistics packages. The
+classes are either supported directly by the packages, reading and writing
+data in the new spatial classes, or indirectly, for example by supplying
+data conversion between the sp classes and the package?s classes in an
+interface package. This last option requires one-to-many links between the
+packages, which are easier to provide and maintain than many-to-many
+links.
+\item[(ii)] The new classes come with a well-tested set of methods (functions) for
+plotting, printing, subsetting, and summarising spatial objects, or combining
+(overlaying) spatial data types.
+\item[(iii)] Packages with interfaces to geographical information systems (GIS), for
+reading and writing GIS file formats, and for coordinate (re)projection
+code support the new classes.
+\item[(iv)] The new methods include Lattice plots, conditioning plots, plot methods
+that combine points, lines, polygons, and grids with map elements (reference
+grids, scale bars, north arrows), degree symbols (as in 52-N) in axis
+labels, etc.
+\end{itemize}
+%---------------------------------------------%
+\section{Important Packages}
+
+\end{document}
+

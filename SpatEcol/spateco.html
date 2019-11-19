@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Spatial Econometrics</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h1>Spatial Econometrics</h1>
+
+<pre><code class="r">### R code from vignette source &#39;spateco.Rnw&#39; Encoding: ISO8859-1
+
+### code chunk number 1: spateco.Rnw:261-271
+library(maptools)
+</code></pre>
+
+<pre><code>## Warning: package &#39;maptools&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code>## Loading required package: sp
+</code></pre>
+
+<pre><code>## Warning: package &#39;sp&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code>## Checking rgeos availability: TRUE
+</code></pre>
+
+<pre><code class="r">library(spdep)
+</code></pre>
+
+<pre><code>## Warning: package &#39;spdep&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code>## Loading required package: Matrix
+</code></pre>
+
+<pre><code>## Warning: package &#39;Matrix&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code class="r">xx &lt;- readShapePoly(system.file(&quot;shapes/sids.shp&quot;, package = &quot;maptools&quot;)[1], 
+    IDvar = &quot;FIPSNO&quot;, proj4string = CRS(&quot;+proj=longlat +ellps=clrk66&quot;))
+
+xxnb &lt;- poly2nb(xx)
+
+plot(xx)
+plot(xxnb, coordinates(xx), add = TRUE)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-1"/> </p>
+
+<h3>Boston Data</h3>
+
+<pre><code class="r">
+### code chunk number 2: spateco.Rnw:1157-1184 Load libraries
+library(INLA)
+</code></pre>
+
+<pre><code>## Warning: package &#39;INLA&#39; was built under R version 3.1.0
+</code></pre>
+
+<pre><code>## Loading required package: splines
+</code></pre>
+
+<pre><code class="r">library(spdep)
+library(parallel)
+
+
+# Load data data(boston)
+library(maptools)
+boston.tr &lt;- readShapePoly(system.file(&quot;etc/shapes/boston_tracts.shp&quot;, package = &quot;spdep&quot;)[1], 
+    ID = &quot;poltract&quot;, proj4string = CRS(paste(&quot;+proj=longlat +datum=NAD27 +no_defs +ellps=clrk66&quot;, 
+        &quot;+nadgrids=@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat&quot;)))
+boston_nb &lt;- poly2nb(boston.tr)
+censored &lt;- boston.tr$CMEDV == 50
+boston.c &lt;- boston.tr[!censored, ]
+boston_nb_1 &lt;- subset(boston_nb, !censored)
+lw &lt;- nb2listw(boston_nb_1, style = &quot;W&quot;)
+
+
+# Define some indices used in the models
+n &lt;- nrow(boston.c)
+boston.c$idx &lt;- 1:n
+</code></pre>
+
+<h3>Adjcency matrix</h3>
+
+<pre><code class="r">
+# W&lt;-nb2mat(boston.soi)
+W &lt;- as(as_dgRMatrix_listw(lw), &quot;CsparseMatrix&quot;)
+
+
+### code chunk number 3: spateco.Rnw:1204-1214 Model matrix for SLM models
+f1 &lt;- log(CMEDV) ~ CRIM + ZN + INDUS + CHAS + I(NOX^2) + I(RM^2) + AGE + log(DIS) + 
+    log(RAD) + TAX + PTRATIO + B + log(LSTAT)
+mmatrix &lt;- model.matrix(f1, boston.c)
+mmatrix2 &lt;- cbind(mmatrix, create_WX(mmatrix, lw, prefix = &quot;lag&quot;))
+</code></pre>
+
+<pre><code>## Error: could not find function &quot;create_WX&quot;
+</code></pre>
+
+<pre><code class="r">
+
+# Compute some Spatial Econometrics models using ML estimation
+m1 &lt;- errorsarlm(f1, boston.c, lw)
+m2 &lt;- lagsarlm(f1, boston.c, lw)
+m3 &lt;- lagsarlm(f1, boston.c, lw, type = &quot;mixed&quot;)
+
+
+### code chunk number 4: spateco.Rnw:1217-1220 (eval = FALSE) summary(m1)
+### summary(m2) summary(m3)
+
+
+### code chunk number 5: spateco.Rnw:1230-1255 DEFINE PRIORS TO BE USED WITH
+### R-INLA
+
+# Zero-variance for Gaussian error term
+zero.variance = list(prec = list(initial = 25, fixed = TRUE))
+
+# Compute eigenvalues for SLM model (as in Havard&#39;s code)
+e = eigenw(lw)
+re.idx = which(abs(Im(e)) &lt; 1e-06)
+rho.max = 1/max(Re(e[re.idx]))
+rho.min = 1/min(Re(e[re.idx]))
+rho = mean(c(rho.min, rho.max))
+
+
+
+# Variance-covarinace matrix for beta coeffients&#39; prior
+betaprec &lt;- 1e-04
+# Standard regression model
+Q.beta = Diagonal(n = ncol(mmatrix), x = 1)
+Q.beta = betaprec * Q.beta
+# Regression model with lagged covariates
+Q.beta2 = Diagonal(n = ncol(mmatrix2), x = 1)
+</code></pre>
+
+<pre><code>## Error: object &#39;mmatrix2&#39; not found
+</code></pre>
+
+<pre><code class="r">Q.beta2 = betaprec * Q.beta2
+</code></pre>
+
+<pre><code>## Error: object &#39;Q.beta2&#39; not found
+</code></pre>
+
+<pre><code class="r">
+
+
+### code chunk number 6: spateco.Rnw:1265-1287 This defines the range for the
+### spatial autocorrelation parameters the spatial adjacenty matrix W, the
+### associated matrix of covariates X and the precision matrix Q.beta for the
+### prior on the coefficients of the covariates
+args.slm = list(rho.min = rho.min, rho.max = rho.max, W = W, X = matrix(0, nrow(mmatrix), 
+    0), Q.beta = matrix(1, 0, 0))
+
+# Definition of priors for precision of the error effect in the slm latent
+# effect and the spatial autocorrelation parameter (in the (0,1) interval).
+hyper.slm = list(prec = list(prior = &quot;loggamma&quot;, param = c(0.01, 0.01)), rho = list(initial = 0, 
+    prior = &quot;logitbeta&quot;, param = c(1, 1)))
+
+
+
+### code chunk number 7: spateco.Rnw:1297-1328 SEM model
+semm1 &lt;- inla(log(CMEDV) ~ CRIM + ZN + INDUS + CHAS + I(NOX^2) + I(RM^2) + AGE + 
+    log(DIS) + log(RAD) + TAX + PTRATIO + B + log(LSTAT) + f(idx, model = &quot;slm&quot;, 
+    args.slm = args.slm, hyper = hyper.slm), data = as(boston.c, &quot;data.frame&quot;), 
+    family = &quot;gaussian&quot;, control.family = list(hyper = zero.variance), control.compute = list(dic = TRUE, 
+        cpo = TRUE))
+</code></pre>
+
+<pre><code>## Warning: Model &#39;slm&#39; in section &#39;latent&#39; is marked as &#39;experimental&#39;; changes may appear at any time.
+##   Use this model with extra care!!! Further warnings are disabled.
+</code></pre>
+
+<pre><code class="r">
+# SLM model
+slmm1 &lt;- inla(log(CMEDV) ~ -1 + f(idx, model = &quot;slm&quot;, args.slm = list(rho.min = rho.min, 
+    rho.max = rho.max, W = W, X = mmatrix, Q.beta = Q.beta), hyper = hyper.slm), 
+    data = as(boston.c, &quot;data.frame&quot;), family = &quot;gaussian&quot;, control.family = list(hyper = zero.variance), 
+    control.compute = list(dic = TRUE, cpo = TRUE))
+
+# SDM model
+sdmm1 &lt;- inla(log(CMEDV) ~ -1 + f(idx, model = &quot;slm&quot;, args.slm = list(rho.min = rho.min, 
+    rho.max = rho.max, W = W, X = mmatrix2, Q.beta = Q.beta2), hyper = hyper.slm), 
+    data = as(boston.c, &quot;data.frame&quot;), family = &quot;gaussian&quot;, control.family = list(hyper = zero.variance), 
+    control.compute = list(dic = TRUE, cpo = TRUE))
+</code></pre>
+
+<pre><code>## Error: object &#39;mmatrix2&#39; not found
+</code></pre>
+
+<pre><code class="r">
+
+
+### code chunk number 8: spateco.Rnw:1353-1363 Transform Spatial
+### autocorrelation parameters to be in (rho.min, rho.max)
+ff &lt;- function(z) {
+    z * (rho.max - rho.min) + rho.min
+}
+semmarg &lt;- inla.tmarginal(ff, semm1$marginals.hyperpar[[2]])
+slmmarg &lt;- inla.tmarginal(ff, slmm1$marginals.hyperpar[[2]])
+sdmmarg &lt;- inla.tmarginal(ff, sdmm1$marginals.hyperpar[[2]])
+</code></pre>
+
+<pre><code>## Error: object &#39;sdmm1&#39; not found
+</code></pre>
+
+<pre><code class="r">
+inla.zmarginal(semmarg, TRUE)
+inla.zmarginal(slmmarg, TRUE)
+inla.zmarginal(sdmmarg, TRUE)
+</code></pre>
+
+<pre><code>## Error: object &#39;sdmmarg&#39; not found
+</code></pre>
+
+<pre><code class="r">
+
+### code chunk number 9: spateco.Rnw:1374-1381
+plot(semmarg, type = &quot;l&quot;, xlab = &quot;rho&quot;, ylab = &quot;density&quot;, xlim = c(0.4, 0.83), 
+    ylim = c(0, 15))
+lines(slmmarg, lty = 2)
+lines(sdmmarg, lty = 3)
+</code></pre>
+
+<pre><code>## Error: object &#39;sdmmarg&#39; not found
+</code></pre>
+
+<pre><code class="r">
+legend(0.6, 15, c(&quot;SEM&quot;, &quot;SLM&quot;, &quot;SDM&quot;), lty = 1:3, bty = &quot;n&quot;)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-3"/> </p>
+
+<pre><code class="r">
+
+
+### code chunk number 10: spateco.Rnw:1397-1418 Add SDM fitted values
+boston.c$SDMftd &lt;- sdmm1$summary.fitted.values[, &quot;mean&quot;]
+</code></pre>
+
+<pre><code>## Error: object &#39;sdmm1&#39; not found
+</code></pre>
+
+<pre><code class="r">
+library(rgdal)
+</code></pre>
+
+<pre><code>## Warning: package &#39;rgdal&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code>## rgdal: version: 0.8-16, (SVN revision 498)
+## Geospatial Data Abstraction Library extensions to R successfully loaded
+## Loaded GDAL runtime: GDAL 1.11.0, released 2014/04/16
+## Path to GDAL shared files: C:/Users/Computer5/Documents/R/win-library/3.0/rgdal/gdal
+## GDAL does not use iconv for recoding strings.
+## Loaded PROJ.4 runtime: Rel. 4.8.0, 6 March 2012, [PJ_VERSION: 480]
+## Path to PROJ.4 shared files: C:/Users/Computer5/Documents/R/win-library/3.0/rgdal/proj
+</code></pre>
+
+<pre><code class="r"># Reproject to the projection used by Google Maps
+bostonf &lt;- spTransform(boston.c, CRS(&quot;+proj=longlat +datum=WGS84&quot;))
+
+# Google Maps
+library(ggmap)
+</code></pre>
+
+<pre><code>## Warning: package &#39;ggmap&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code>## Loading required package: ggplot2
+</code></pre>
+
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code class="r">
+bostonf &lt;- fortify(bostonf, region = &quot;TRACT&quot;)
+</code></pre>
+
+<pre><code>## Loading required package: rgeos
+</code></pre>
+
+<pre><code>## Warning: package &#39;rgeos&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code>## rgeos version: 0.3-4, (SVN revision 438)
+##  GEOS runtime version: 3.4.2-CAPI-1.8.2 r3921 
+##  Polygon checking: TRUE
+</code></pre>
+
+<pre><code class="r"># Add data
+idx &lt;- match(bostonf$id, as.character(boston.c$TRACT))
+bostonf$SDMftd &lt;- boston.c$SDMftd[idx]
+
+
+qmap(&quot;boston&quot;, zoom = 10, maptype = &quot;satellite&quot;) + geom_polygon(data = bostonf, 
+    aes(x = long, y = lat, group = group, fill = SDMftd), colour = &quot;white&quot;, 
+    alpha = 0.8, size = 0.3)
+</code></pre>
+
+<pre><code>## Map from URL : http://maps.googleapis.com/maps/api/staticmap?center=boston&amp;zoom=10&amp;size=%20640x640&amp;scale=%202&amp;maptype=satellite&amp;sensor=false
+## Google Maps API Terms of Service : http://developers.google.com/maps/terms
+## Information from URL : http://maps.googleapis.com/maps/api/geocode/json?address=boston&amp;sensor=false
+## Google Maps API Terms of Service : http://developers.google.com/maps/terms
+</code></pre>
+
+<pre><code>## Error: object &#39;SDMftd&#39; not found
+</code></pre>
+
+<pre><code class="r">
+
+
+### code chunk number 11: spateco.Rnw:1457-1482
+
+# RE-analysis of the Katrina dataset using R-INLA
+library(INLA)
+library(parallel)
+library(spdep)
+
+# Here I use the katrina dataset from spatialprobit
+
+library(spatialprobit)
+</code></pre>
+
+<pre><code>## Error: there is no package called &#39;spatialprobit&#39;
+</code></pre>
+
+<pre><code class="r">data(Katrina)
+</code></pre>
+
+<pre><code>## Warning: data set &#39;Katrina&#39; not found
+</code></pre>
+
+<pre><code class="r">
+# And index for slm model
+n &lt;- nrow(Katrina)
+</code></pre>
+
+<pre><code>## Error: object &#39;Katrina&#39; not found
+</code></pre>
+
+<pre><code class="r">Katrina$idx &lt;- 1:n
+</code></pre>
+
+<pre><code>## Error: object &#39;Katrina&#39; not found
+</code></pre>
+
+<pre><code class="r">
+# (a) 0-3 months time horizon LeSage et al. (2011) use k=11 nearest
+# neighbors in this case
+nb &lt;- knn2nb(knearneigh(cbind(Katrina$lat, Katrina$long), k = 11))
+</code></pre>
+
+<pre><code>## Error: object &#39;Katrina&#39; not found
+</code></pre>
+
+<pre><code class="r">listw &lt;- nb2listw(nb, style = &quot;W&quot;)
+</code></pre>
+
+<pre><code>## Error: object &#39;nb&#39; not found
+</code></pre>
+
+<pre><code class="r">W1 &lt;- as(as_dgRMatrix_listw(listw), &quot;CsparseMatrix&quot;)
+</code></pre>
+
+<pre><code>## Error: object &#39;listw&#39; not found
+</code></pre>
+
+<pre><code class="r">
+
+
+
+
+### code chunk number 12: spateco.Rnw:1494-1518
+</code></pre>
+
+<h3>Model matrix for SLM models</h3>
+
+<pre><code class="r">
+f1 &lt;- y1 ~ 1 + flood_depth + log_medinc + small_size + large_size + low_status_customers + 
+    high_status_customers + owntype_sole_proprietor + owntype_national_chain
+mm &lt;- model.matrix(f1, Katrina)
+</code></pre>
+
+<pre><code>## Error: object &#39;Katrina&#39; not found
+</code></pre>
+
+<pre><code class="r"># With lagged covariates
+mm2 &lt;- cbind(mm, as.matrix(W1) %*% mm[, -1])
+</code></pre>
+
+<pre><code>## Error: object &#39;mm&#39; not found
+</code></pre>
+
+<pre><code class="r">
+# Zero-variance for Gaussian erros, not needed here(?)
+zero.variance = list(prec = list(initial = 25, fixed = TRUE))
+</code></pre>
+
+<pre><code class="r">#DEFINE PRIORS TO BE USED WITH R-INLA
+
+#Compute eigenvalues for SLM model (as in Havard&#39;s code)
+e = eigen(W1)$values
+</code></pre>
+
+<pre><code>## Error: object &#39;W1&#39; not found
+</code></pre>
+
+<pre><code class="r">re.idx = which(abs(Im(e)) &lt; 1e-6)
+rho.max = 1/max(Re(e[re.idx]))
+rho.min = 1/min(Re(e[re.idx]))
+rho = mean(c(rho.min, rho.max))
+
+
+
+
+
+###
+### code chunk number 13: spateco.Rnw:1530-1564
+###
+
+#Variance-covarinace matrix for beta coeffients&#39; prior
+#
+betaprec1&lt;-.0001
+#Standard regression model
+Q.beta1 = Diagonal(n=ncol(mm), x=1)
+</code></pre>
+
+<pre><code>## Error: object &#39;mm&#39; not found
+</code></pre>
+
+<pre><code class="r">Q.beta1 = betaprec1*Q.beta1
+</code></pre>
+
+<pre><code>## Error: object &#39;Q.beta1&#39; not found
+</code></pre>
+
+<pre><code class="r">#Regression model with lagged covariates
+Q.beta2 = Diagonal(n=ncol(mm2), x=1)
+</code></pre>
+
+<pre><code>## Error: object &#39;mm2&#39; not found
+</code></pre>
+
+<pre><code class="r">Q.beta2 = betaprec1*Q.beta2
+</code></pre>
+
+<pre><code>## Error: object &#39;Q.beta2&#39; not found
+</code></pre>
+
+<pre><code class="r">
+#This defines the range for the spatial autocorrelation parameters
+# the spatial adjacenty matrix W, the associated
+#matrix of covariates X and the precision matrix Q.beta for the prior
+#on the coefficients of the covariates 
+#
+args.slm = list(
+   rho.min = rho.min ,
+   rho.max = rho.max,
+   W = W1,
+   X = matrix(0, nrow(mm),0),
+   Q.beta = matrix(1,0,0)
+)
+</code></pre>
+
+<pre><code>## Error: object &#39;W1&#39; not found
+</code></pre>
+
+<pre><code class="r">
+#Definition of priors for precision of the error effect in the slm latent
+#effect and the spatial autocorrelation parameter (in the (0,1) interval).
+#
+hyper.slm = list(
+   prec = list(initial=log(1), fixed=TRUE),#prior = &quot;loggamma&quot;, param = c(0.01, 0.01)),
+      rho = list(prior = &quot;logitbeta&quot;, param = c(1, 1))#list(initial=0, prior = &quot;logitbeta&quot;, param = c(1,1))
+)
+
+
+
+
+
+###
+### code chunk number 14: spateco.Rnw:1576-1613
+###
+
+
+#SEM model
+semm1&lt;-inla(
+   update(f1, ~.+f(idx, model=&quot;slm&quot;, args.slm=args.slm, hyper=hyper.slm)),
+   data=Katrina, family=&quot;binomial&quot;,
+   control.family = list(link=&quot;probit&quot;, hyper=zero.variance),
+   control.compute=list(dic=TRUE, cpo=TRUE)
+)
+</code></pre>
+
+<pre><code>## Error: object &#39;Katrina&#39; not found
+</code></pre>
+
+<pre><code class="r">
+#SLM model
+slmm1&lt;-inla( y1 ~ -1 +
+   f(idx, model=&quot;slm&quot;,
+      args.slm=list(rho.min = rho.min, rho.max = rho.max, W=W1, X=mm,
+         Q.beta=Q.beta1),
+      hyper=hyper.slm),
+   data=Katrina, family=&quot;binomial&quot;,
+   control.family = list(link=&quot;probit&quot;, hyper=zero.variance),
+   control.compute=list(dic=TRUE, cpo=TRUE)
+)
+</code></pre>
+
+<pre><code>## Error: object &#39;Katrina&#39; not found
+</code></pre>
+
+<pre><code class="r">
+
+#SDM model
+sdmm1&lt;-inla( y1 ~ -1 +
+   f(idx, model=&quot;slm&quot;,
+      args.slm=list(rho.min = rho.min, rho.max = rho.max, W=W1, X=mm2,
+         Q.beta=Q.beta2),
+      hyper=hyper.slm),
+   data=Katrina, family=&quot;binomial&quot;,
+   control.family = list(link=&quot;probit&quot;, hyper=zero.variance),
+   control.compute=list(dic=TRUE, cpo=TRUE)
+)
+</code></pre>
+
+<pre><code>## Error: object &#39;Katrina&#39; not found
+</code></pre>
+
+<pre><code class="r">
+
+
+
+
+
+
+###
+### code chunk number 15: spateco.Rnw:1625-1630
+###
+#Transform Spatial autocorrelation parameters to be in  (rho.min, rho.max)
+ff&lt;-function(z){z*(rho.max-rho.min)+rho.min}
+semmarg&lt;-inla.tmarginal(ff, semm1$marginals.hyperpar[[1]])
+slmmarg&lt;-inla.tmarginal(ff, slmm1$marginals.hyperpar[[1]])
+sdmmarg&lt;-inla.tmarginal(ff, sdmm1$marginals.hyperpar[[1]])
+</code></pre>
+
+<pre><code>## Error: object &#39;sdmm1&#39; not found
+</code></pre>
+
+<pre><code class="r">
+
+###
+### code chunk number 16: spateco.Rnw:1636-1645
+###
+
+plot(semmarg, type=&quot;l&quot;,
+   xlab=expression(rho), ylab=expression(paste(pi, &quot;(&quot;, rho, &quot;|y)&quot;)),
+   xlim=c(-0.2, 0.8), ylim=c(0,6))
+lines(slmmarg, lty=2)
+lines(sdmmarg, lty=3)
+</code></pre>
+
+<pre><code>## Error: object &#39;sdmmarg&#39; not found
+</code></pre>
+
+<pre><code class="r">
+legend(.0, 6, c(&quot;SEM&quot;, &quot;SLM&quot;, &quot;SDM&quot;), lty=1:3, bty=&quot;n&quot;)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-5"/> </p>
+
+<pre><code class="r">
+</code></pre>
+
+</body>
+
+</html>
+

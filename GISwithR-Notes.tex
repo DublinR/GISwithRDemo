@@ -1,0 +1,318 @@
+\documentclass[12pt]{article}
+\usepackage{framed}
+\usepackage{amsmath}
+%opening
+\title{GIS with \texttt{R}}
+\author{Dublin \texttt{R}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Geographic Information Systems with \texttt{R}
+\end{abstract}
+%----------------------------------------------- %
+\newpage
+\section*{Overview of Workshop}
+\begin{enumerate}
+\item Overview of GIS
+\item Terminology for GIS
+\item Important \texttt{R} packages
+\end{enumerate}
+%http://facweb.knowlton.ohio-state.edu/pviton/courses2/crp87105/spatial-data.html
+% http://www.gdal.org/ogr/
+
+%----------------------------------------------- %
+\newpage
+\section*{Geographic Information Systems with \texttt{R}}
+GIS is a relatively broad term that can refer to a number of different technologies, processes, and methods. It is attached to many operations and has many applications related to engineering, planning, management, transport/logistics, insurance, telecommunications, and business. For that reason, GIS and location intelligence applications can be the foundation for many location-enabled services that rely on analysis, visualization and dissemination of results for collaborative decision making.
+
+
+%-----------------------------------------------------------------------%
+\newpage
+\subsection*{Important \texttt{R} Packages}
+
+\begin{itemize}
+\item \textbf{\textit{sp}}
+\item \textbf{\textit{raster}}
+\item  \textbf{\textit{maps}}, \textbf{\textit{mapproj}} and \textbf{\textit{maptools}} packages, that provide a wide variety of map functions, projections, and so on.
+\end{itemize}
+
+%-----------------------------------------------------------------------%
+\newpage
+\subsection{Making a Map}
+Once we have checked the names in
+the imported object, we can use the \texttt{spplot} method in \textit{\textbf{sp}} to make a map:
+\begin{framed}
+\begin{verbatim}
+> olinda <- readOGR(".", "setor1")
+OGR data source with driver: ESRI Shapefile
+Source: ".", layer: "setor1"
+with 243 features and 10 fields
+Feature type: wkbPolygon with 2 dimensions
+> names(olinda)
+[1] "AREA" "PERIMETER"
+[3] "SETOR_" "SETOR_ID"
+[5] "VAR5" "DENS_DEMO"
+[7] "SET" "CASES"
+[9] "POP" "DEPRIV"
+> spplot(olinda, "DEPRIV", col.regions = grey.colors(20,
++0.9,0.3))
+\end{verbatim}
+\end{framed}
+
+%-----------------------------------------------------------------------%
+\subsection{GIS Data Models}
+\begin{itemize}
+\item Spatial reference systems are used to register different data in
+the same framework
+\item Geographical metadata includes projection, ellipsoid, and
+datum, as temporal metadata includes series origin and time
+zone
+\item Spatial data regarding position are subject to measurement
+error and to numerical artifacts as a result of transformation
+\item The two major data models: raster and vector, handle
+resolution differently; neither handle ``crispness" well.
+\end{itemize}
+%-----------------------------------------------------------------------%
+
+\subsection{Spatial Objects}
+% BIVAND ASDA SLIDE
+\begin{itemize}
+\item The foundation object is the Spatial class, with just two slots
+(new-style class objects have pre-defined components called
+slots)
+\item The first is a bounding box, and is mostly used for setting up
+plots
+\item The second is a \texttt{CRS} class object defining the \textit{\textbf{coordinate
+reference system}}, and may be set to \texttt{CRS(as.character(NA))},
+its default value.
+\item Operations on \texttt{Spatial*} objects should update or copy these
+values to the new \texttt{Spatial*} objects being created
+\end{itemize}
+
+
+%-----------------------------------------------------------------------%
+
+\subsection*{Spatial points}
+\begin{itemize}
+\item The most basic spatial data object is a \textit{\textbf{point}}, which may have
+2 or 3 dimensions.
+\item A single coordinate, or a set of such coordinates, may be used
+to define a \texttt{SpatialPoints} object; coordinates should be of
+mode double and will be promoted if not.
+\item The points in a \texttt{SpatialPoints} object may be associated with
+a row of attributes to create a \texttt{SpatialPointsDataFrame} object.
+\item The coordinates and attributes may, but do not have to be
+keyed to each other using ID values.
+\end{itemize}
+
+
+
+%-----------------------------------------------------------------------%
+
+\subsection*{Important Terminology}
+
+
+\begin{itemize}
+\item \textbf{polygons}
+\item The GADM database
+\end{itemize}
+
+\subsubsection{SHP (.shp)}
+
+\begin{itemize}
+\item ESRI shape file format.
+\item Common GIS file format.
+\item Used for archiving and exchanging cartographic and geospatial information.
+\item Stores the geometry and data of map features.
+\item SHP is an acronym derived from the word Shape.
+\item A SHP bundle consists of multiple files combined in a file archive or directory.
+\item Binary format.
+\end{itemize}
+
+
+%------------------------------------------------------------------- %
+
+The ESRI Shapefile is a widely used file format for storing vector-based geopatial data (i.e., points, lines, and polygons). This example demonstrates use of several different R packages that provide functions for reading and/or writing shapefiles. The first two approaches shown here use packages that depend on the sp package, which defines a set of spatial classes that have become the de facto standard spatial data types in R. The third approach creates R data objects that are less generally useful, but necessary when calling other analytical functions defined in the package.
+
+
+\subsubsection{Using rgdal}
+The \textit{\textbf{rgdal}} package provides an interface to the GDAL/OGR library, which powers the data import/export capabilities of many geospatially aware software applications. The package includes functions \texttt{readOGR} and \texttt{writeOGR} for reading and writing not only shapefiles, but numerous other vector-based file formats. 
+
+In addition, the ogrInfo function is useful for retrieving details about the file without reading in the full dataset. These functions are all capable of automatically reading and writing projection information if available. Provided you are able to install the separate GDAL/OGR library - which may be tricky on some systems - it is worth learning how to use this package if you frequently work with shapefiles and/or other spatial data formats, including not just vector formats but raster formats as well.
+
+\subsubsection{Using maptools}
+The \textit{\textbf{maptools}} package includes a number of useful functions for reading, writing, converting, and otherwise handling spatial objects in \texttt{R}. The general functions for reading and writing shapefiles are readShapeSpatial and \texttt{writeSpatialShape}, respectively. In both cases, the function automatically determines whether the shapefile (or \texttt{R} object) contains points, lines, or polygons, and will then read in (or write out) the data using a more specialized function of the particular type. These specialized functions, such as \texttt{readShapeLines} for reading lines, can also be called directly. One advantage of doing so is that it will complain if you inadvertently use it on the wrong data type, helping you to catch errors sooner. 
+
+Unlike their rgdal counterparts, the \textbf{\textit{maptools}} functions neither read nor write projection information, leaving it up to you to manage these details manually.
+
+\subsubsection{Using PBSmapping}
+The PBSmapping package can also read (but not write) shapefiles. However, note that \textit{\textbf{PBSmapping}} uses its own custom-defined spatial data types that are optimized to work with various specialized package functions. This makes it harder to take advantage of functions defined in the numerous packages that are built on \textit{\textbf{sp}}, although the maptools package does provide functions that convert between the different formats.
+
+%--------------------------------------------------------- %
+\newpage
+\section{RGDAL}
+\begin{framed}
+\begin{verbatim}
+library(rgdal)
+ 
+# for shapefiles, first argument of the read/write/info 
+# functions is the directory location, and the second 
+# is the file name without suffix
+ 
+# optionally report shapefile details
+ogrInfo(".", "nw-rivers")
+# Source: ".", layer: "nw-rivers"
+# Driver: ESRI Shapefile number of rows 12 
+# Feature type: wkbLineString with 2 dimensions
+# +proj=longlat +datum=WGS84 +no_defs  
+# Number of fields: 2 
+#     name type length typeName
+#     1   NAME    4     80   String
+#     2 SYSTEM    4     80   String
+ 
+# read in shapefiles
+centroids.rg <- readOGR(".", "nw-centroids")
+rivers.rg <- readOGR(".", "nw-rivers")
+counties.rg <- readOGR(".", "nw-counties")
+ 
+# note that readOGR will read the .prj file if it exists
+print(proj4string(counties.rg))
+# [1] " +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+ 
+# generate a simple map showing all three layers
+plot(counties.rg, axes=TRUE, border="gray")
+points(centroids.rg, pch=20, cex=0.8)
+lines(rivers.rg, col="blue", lwd=2.0)
+ 
+# write out a new shapefile (including .prj component)
+writeOGR(counties.rg, ".", "counties-rgdal", driver="ESRI Shapefile")
+\end{verbatim}
+\end{framed}
+\section*{File Formats}
+
+%---------------------------------------------------------%
+
+\subsection*{The KML format}
+
+Keyhole Markup Language (KML) is an XML notation for expressing geographic annotation and visualization within Internet-based, two-dimensional maps and three-dimensional Earth browsers. KML was developed for use with Google Earth, which was originally named Keyhole Earth Viewer. It was created by Keyhole, Inc, which was acquired by Google in 2004. KML became an international standard of the Open Geospatial Consortium in 2008.
+
+\subsection{The maptools package}
+%BIVAND ASDA USER Slide 27
+\begin{itemize}
+\item \textit{\textbf{maptools}} includes \texttt{ContourLines2SLDF()} to convert contour lines
+to \texttt{SpatialLinesDataFrame} objects
+\item \textit{\textbf{maptools}} also allows lines or polygons from maps to be used as \texttt{sp}
+objects
+\item \textit{\textbf{maptools}} can export sp objects to \texttt{PBSmapping}
+\item \textit{\textbf{maptools}} uses \texttt{gpclib} to check polygon topology and to dissolve
+polygons
+\item \textit{\textbf{maptools}} converts some \texttt{sp} objects for use in spatstat
+\item \textit{\textbf{maptools}} can read GSHHS high-resolution shoreline data into
+SpatialPolygon objects
+\end{itemize}
+
+%---------------------------------------------------------%
+% http://statisfaction.wordpress.com/2011/12/13/create-maps-with-maptools/
+\begin{framed}
+\begin{verbatim}
+library(maptools)
+france<-readShapeSpatial("departements.shp",
+  proj4string=CRS("+proj=longlat"))
+routesidf<-readShapeLines(
+  "ile-de-france.shp/roads.shp",
+  proj4string=CRS("+proj=longlat")
+  )
+trainsidf<-readShapeLines(
+  "ile-de-france.shp/railways.shp",
+  proj4string=CRS("+proj=longlat")
+  )
+plot(france,xlim=c(2.2,2.4),ylim=c(48.75,48.95),lwd=2)
+plot(routesidf[routesidf$type=="secondary",],add=TRUE,lwd=2,col="lightgray")
+plot(routesidf[routesidf$type=="primary",],add=TRUE,lwd=2,col="lightgray")
+plot(trainsidf[trainsidf$type=="rail",],add=TRUE,lwd=1,col="burlywood3")
+points(eglises$lon,eglises$lat,pch=20,col="red")
+\end{verbatim}
+\end{framed}
+%---------------------------------------------------------%
+
+\subsection{Coordinate reference systems}
+% Bivand Slide 37
+\begin{itemize}
+\item Coordinate reference systems (CRS) are at the heart of
+geodetics and cartography: how to represent a bumpy ellipsoid
+on the plane.
+\item We can speak of geographical CRS expressed in degrees and
+associated with an ellipse, a prime meridian and a datum, and
+projected CRS expressed in a measure of length, and a chosen
+position on the earth, as well as the underlying ellipse, prime
+meridian and datum.
+\item Most countries have multiple CRS, and where they meet there
+is usually a big mess. This led to the collection by the
+European Petroleum Survey Group (EPSG, now Oil \& Gas
+Producers (OGP) Surveying \& Positioning Committee) of a
+geodetic parameter dataset.
+\end{itemize}
+
+\newpage
+% ---------------------------------------------- %
+\subsection{The \textit{\textbf{rgeos}} package}
+\begin{itemize}
+\item The \textit{\textbf{rgeos}} package interfaces the GEOS/JTS topology suite providing predicates and operations for geometries.
+
+\item The simplest are measures for planar geometries : only these are supported. 
+
+\item A complication is that computational geometry may represent objects using different scaling factors, leading to geometries becoming "unclean"; GEOS uses a fixed precision representation.
+\end{itemize} 
+% ---------------------------------------------- %
+\newpage
+
+\begin{description}
+\item[Azimuth]
+\item[Cartesian Co-ordinates]
+\item[Disease Mapping]
+\end{description}
+
+\begin{framed}
+\begin{verbatim}
+library(sp)
+\end{verbatim}
+\end{framed}
+\subsection*{Spatial analysis with GIS}
+
+GIS spatial analysis is a rapidly changing field, and GIS packages are increasingly including analytical tools as standard built-in facilities, as optional toolsets, as add-ins or 'analysts'. In many instances these are provided by the original software suppliers (commercial vendors or collaborative non commercial development teams), whilst in other cases facilities have been developed and are provided by third parties. Furthermore, many products offer software development kits (SDKs), programming languages and language support, scripting facilities and/or special interfaces for developing one's own analytical tools or variants. 
+
+
+The website "Geospatial Analysis" and associated book/ebook attempt to provide a reasonably comprehensive guide to the subject.[19] The increased availability has created a new dimension to business intelligence termed "spatial intelligence" which, when openly delivered via intranet, democratizes access to geographic and social network data. Geospatial intelligence, based on GIS spatial analysis, has also become a key element for security. GIS as a whole can be described as conversion to a vectorial representation or to any other digitisation process.
+%---------------------------------------------------------%
+\subsection{GADM}
+GADM, the Database of Global Administrative Areas, is a high-resolution database of country administrative areas, with a goal of "all countries, at all levels, at any time period."[1] The database has a few export formats, including shapefiles that are used in most common GIS applications.[2] Files formatted for the programming language R are also available, allowing the easy creation of descriptive data plots that include geographical maps.[3][4]
+Although it is a public database, GADM has a higher spatial resolution than other free databases,[5] and also higher than commercial software such as ArcGIS.[6]
+
+\subsection*{GDAL}
+GDAL (Geospatial Data Abstraction Library) is a library for reading and writing raster geospatial data formats, and is released under the permissive X/MIT style free software license by the Open Source Geospatial Foundation. As a library, it presents a single abstract data model to the calling application for all supported formats. It may also be built with a variety of useful command-line utilities for data translation and processing.
+
+The related OGR library (OGR Simple Features Library[2]), which is part of the GDAL source tree, provides a similar capability for simple features vector data.
+GDAL was primarily developed by Frank Warmerdam until the release of version 1.3.2, when maintainership was officially transferred to the GDAL/OGR Project Management Committee under the Open Source Geospatial Foundation.
+GDAL/OGR is considered a major free software project for its "extensive capabilities of data exchange" and also in the commercial GIS community due to its widespread use and comprehensive set of functionalities.
+%-----------------------------------------------------------------------%
+
+\section{World Maps}
+The \textbf{\textit{rworldmap}} package is used here. This package was written by Andy South. 
+\begin{framed}
+\begin{verbatim}
+mapCountryData( mapRegion='India' )
+\end{verbatim}
+\end{framed}
+
+%-----------------------------------------------------------------------%
+\subsection*{References}
+\textbf{Roger Bivand}\\
+\textbf{Barry Rowlinson}\\
+%-----------------------------------------------------------------------% 
+
+
+
+\end{document}

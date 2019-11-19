@@ -1,0 +1,85 @@
+%http://stackoverflow.com/questions/16028659/plots-on-a-map-using-ggplot2
+%-------------------------------------------------------------%
+\subsection*{Preliminaries}
+\begin{framed}
+\begin{verbatim}
+require(ggplot2)
+require(maps)
+\end{verbatim}
+\end{framed}
+%-------------------------------------------------------------%
+\subsubsection*{Get World Data}
+\begin{framed}
+\begin{verbatim}
+
+#Get world map info
+world_map <- map_data("world")
+
+#Creat a base plot
+p <- ggplot() + coord_fixed()
+
+\end{verbatim}
+\end{framed}
+%-------------------------------------------------------------%
+\subsection*{How is this data object structured?}
+\begin{framed}
+\begin{verbatim}
+> str(world_map )
+'data.frame':   25553 obs. of  6 variables:
+ $ long     : num  -133 -132 -132 -132 -130 ...
+ $ lat      : num  58.4 57.2 57 56.7 56.1 ...
+ $ group    : num  1 1 1 1 1 1 1 1 1 1 ...
+ $ order    : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ region   : chr  "Canada" "Canada" "Canada" "Canada" ...
+ $ subregion: chr  NA NA NA NA ...
+> mode(world_map)
+[1] "list"
+> class(world_map)
+[1] "data.frame"
+>
+> class(p)
+[1] "gg"     "ggplot"
+> mode(p)
+[1] "list"
+\end{verbatim}
+\end{framed}
+%-------------------------------------------------------------%
+\subsection*{base map}
+\begin{framed}
+\begin{verbatim}
+#Add map to base plot
+base_world <- p + geom_polygon(data=world_map,
+                               aes(x=long,
+                                   y=lat,
+                                   group=group))
+\end{verbatim}
+\end{framed}
+%-------------------------------------------------------------%
+\begin{framed}
+\begin{verbatim}
+#Create example data
+geo_data <- data.frame(long=c(20,20,100,100,20,20,100,100),
+                       lat=c(0,0,0,0,0,0,0,0),
+                       value=c(10,30,40,50,20,20,100,100),
+                       Facet=rep(c("Facet_1", "Facet_2"), 4),
+                       colour=rep(c("colour_1", "colour_2"), each=4))
+\end{verbatim}
+\end{framed}
+%-------------------------------------------------------------%
+\subsection*{base map}
+\begin{framed}
+\begin{verbatim}
+#Creat an example plot
+map_with_jitter <- base_world+geom_point(data=geo_data,
+                                            aes(x=long,
+                                                y=lat,
+                                                colour=colour,
+                                                size=value),
+                                         position="jitter",
+                                         alpha=I(0.5))
+\end{verbatim}
+\end{framed}
+%-------------------------------------------------------------
+%http://www.findlatitudeandlongitude.com/batch-geocode/#.UnkCTHDwmi4
+\begin{verbatim}
+http://www.findlatitudeandlongitude.com/batch-geocode/#.UnkCTHDwmi4

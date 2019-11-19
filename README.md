@@ -1,4 +1,4 @@
-GISwithRDemo
-============
+GISwithR
+========
 
-GIS with R demo (Nov 2013)
+GIS with R

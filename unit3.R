@@ -1,0 +1,194 @@
+### R code from vignette source 'unit3.Rnw'
+
+###################################################
+### code chunk number 1: spmaps (eval = FALSE)
+###################################################
+## library(maptools)
+## library(maps)
+## ill <- map("county", regions="illinois", plot=FALSE, fill=TRUE)
+## IDs <- sub("^illinois,", "", ill$names)
+## ill_sp <- map2SpatialPolygons(ill, IDs, CRS("+proj=longlat"))
+## plot(ill_sp, axes=TRUE)
+
+
+###################################################
+### code chunk number 2: unit3.Rnw:70-73
+###################################################
+#oopar <- par(mar=c(3,3,1,1)+0.1)
+library(maptools)
+library(maps)
+ill <- map("county", regions="illinois", plot=FALSE, fill=TRUE)
+IDs <- sub("^illinois,", "", ill$names)
+ill_sp <- map2SpatialPolygons(ill, IDs, CRS("+proj=longlat"))
+plot(ill_sp, axes=TRUE)
+#par(oopar)
+
+
+###################################################
+### code chunk number 3: unit3.Rnw:81-82
+###################################################
+options(width=36)
+
+
+###################################################
+### code chunk number 4: unit3.Rnw:86-87 (eval = FALSE)
+###################################################
+## library(maptools)
+## library(maps)
+## ill <- map("county", regions="illinois", plot=FALSE, fill=TRUE)
+## IDs <- sub("^illinois,", "", ill$names)
+## ill_sp <- map2SpatialPolygons(ill, IDs, CRS("+proj=longlat"))
+## plot(ill_sp, axes=TRUE)
+
+
+###################################################
+### code chunk number 5: unit3.Rnw:90-91
+###################################################
+options(width=60)
+
+
+###################################################
+### code chunk number 6: unit3.Rnw:148-149
+###################################################
+library(rgdal)
+
+
+###################################################
+### code chunk number 7: unit3.Rnw:151-157
+###################################################
+ED50 <- CRS(paste("+init=epsg:4230", "+towgs84=-87,-96,-120,0,0,0,0"))
+IJ.east <- as(char2dms("4d31\'00\"E"), "numeric")
+IJ.north <- as(char2dms("52d28\'00\"N"), "numeric")
+IJ.ED50 <- SpatialPoints(cbind(x=IJ.east, y=IJ.north), ED50)
+res <- spTransform(IJ.ED50, CRS("+proj=longlat +datum=WGS84"))
+spDistsN1(coordinates(IJ.ED50), coordinates(res), longlat=TRUE)*1000
+
+
+###################################################
+### code chunk number 8: unit3.Rnw:267-275 (eval = FALSE)
+###################################################
+## td <- tempdir()
+## dd <- paste(td, "shapes", sep="/")
+## dir.create(dd)
+## rgdalvd <- system.file("vectors", package = "rgdal")
+## scots <- list.files(rgdalvd, pattern="scot_BNG") 
+## file.copy(from=paste(rgdalvd, scots, sep="/"), to=paste(dd, scots, sep="/"))
+## oldwd <- getwd()
+## setwd(dd)
+
+
+###################################################
+### code chunk number 9: unit3.Rnw:277-281
+###################################################
+library(maptools)
+#list.files()
+getinfo.shape("datasets/s_01au07.shp")
+US <- readShapePoly("datasets/s_01au07.shp")
+
+
+###################################################
+### code chunk number 10: unit3.Rnw:283-284 (eval = FALSE)
+###################################################
+## setwd(oldwd)
+
+
+###################################################
+### code chunk number 11: unit3.Rnw:304-306 (eval = FALSE)
+###################################################
+## oldwd <- getwd()
+## setwd(dd)
+
+
+###################################################
+### code chunk number 12: unit3.Rnw:308-310
+###################################################
+US1 <- readOGR(dsn="datasets", layer="s_01au07")
+cat(strwrap(proj4string(US1)), sep="\n")
+
+
+###################################################
+### code chunk number 13: unit3.Rnw:312-313 (eval = FALSE)
+###################################################
+## setwd(oldwd)
+
+
+###################################################
+### code chunk number 14: unit3.Rnw:351-359
+###################################################
+td <- tempdir()
+dd <- paste(td, "pix", sep="/")
+dir.create(dd)
+rgdalvd <- system.file("pictures", package = "rgdal")
+wnd <- list.files(rgdalvd, pattern="SP27GTIF") 
+file.copy(from=paste(rgdalvd, wnd, sep="/"), to=paste(dd, wnd, sep="/"))
+oldwd <- getwd()
+setwd(dd)
+
+
+###################################################
+### code chunk number 15: unit3.Rnw:361-362
+###################################################
+options("width"=100)
+
+
+###################################################
+### code chunk number 16: unit3.Rnw:364-367
+###################################################
+getGDALDriverNames()$name
+list.files()
+SP27GTIF <- readGDAL("SP27GTIF.TIF")
+
+
+###################################################
+### code chunk number 17: unit3.Rnw:369-370
+###################################################
+options("width"=36)
+
+
+###################################################
+### code chunk number 18: unit3.Rnw:372-376
+###################################################
+setwd(oldwd)
+summary(SP27GTIF)
+summary(SP27GTIF)
+summary(SP27GTIF)
+
+
+###################################################
+### code chunk number 19: raster (eval = FALSE)
+###################################################
+## image(SP27GTIF, col=grey(1:99/100), axes=TRUE)
+
+
+###################################################
+### code chunk number 20: unit3.Rnw:389-392
+###################################################
+oopar <- par(mar=c(3,3,1,1)+0.1)
+image(SP27GTIF, col=grey(1:99/100), axes=TRUE)
+par(oopar)
+
+
+###################################################
+### code chunk number 21: unit3.Rnw:401-402 (eval = FALSE)
+###################################################
+## image(SP27GTIF, col=grey(1:99/100), axes=TRUE)
+
+
+###################################################
+### code chunk number 22: unit3.Rnw:413-414
+###################################################
+options("width"=100)
+
+
+###################################################
+### code chunk number 23: unit3.Rnw:416-417
+###################################################
+summary(SP27GTIF)
+
+
+###################################################
+### code chunk number 24: unit3.Rnw:419-420
+###################################################
+options("width"=36)
+
+
